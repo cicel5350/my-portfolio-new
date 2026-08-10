@@ -593,6 +593,27 @@ function flattenDetailSrcs(items: readonly DetailSrc[]) {
   return items.flatMap((item) => (typeof item === "string" ? [item] : [...item]));
 }
 
+/** Media srcs in the same order the detail modal renders them. */
+function getDetailMediaSrcs(project: Project): string[] {
+  if (project.detailBlocks) {
+    return project.detailBlocks.flatMap((block) => {
+      if (block.type !== "media") return [];
+      return typeof block.src === "string" ? [block.src] : [...block.src];
+    });
+  }
+  return flattenDetailSrcs(project.detailImages);
+}
+
+function getFirstStillSrcs(srcs: readonly string[], count: number) {
+  const stills: string[] = [];
+  for (const src of srcs) {
+    if (isVideoSrc(src)) continue;
+    stills.push(src);
+    if (stills.length >= count) break;
+  }
+  return stills;
+}
+
 const DETAIL_CONTENT_X = "px-8 sm:px-10";
 /** Outer inset matches media; inner border matches image content width. */
 const DETAIL_RULE_OUTER = DETAIL_CONTENT_X;
@@ -734,7 +755,7 @@ function DetailImageLightbox({
           alt={alt}
           width={2400}
           height={1600}
-          quality={100}
+          quality={90}
           unoptimized
           draggable={false}
           sizes="96vw"
@@ -778,8 +799,7 @@ function ZoomableDetailImage({
         alt={alt}
         width={1440}
         height={900}
-        quality={100}
-        unoptimized
+        quality={80}
         draggable={false}
         priority={priority}
         sizes={sizes}
@@ -795,6 +815,7 @@ function DetailMediaBlock({
   title,
   index,
   priority = false,
+  videoEager = false,
   alignStart = false,
   onZoomImage,
 }: {
@@ -802,6 +823,8 @@ function DetailMediaBlock({
   title: string;
   index: number;
   priority?: boolean;
+  /** First-screen video may use metadata preload */
+  videoEager?: boolean;
   alignStart?: boolean;
   onZoomImage: (src: string, alt: string) => void;
 }) {
@@ -847,6 +870,7 @@ function DetailMediaBlock({
               src={src}
               alt={`${title} detail ${index + 1}-${mediaIndex + 1}`}
               priority={priority && mediaIndex === 0}
+              videoEager={videoEager && mediaIndex === 0}
               paired
               alignStart={alignStart}
               onZoomImage={onZoomImage}
@@ -860,6 +884,7 @@ function DetailMediaBlock({
             src={src}
             alt={`${title} detail ${index + 1}`}
             priority={priority && mediaIndex === 0}
+            videoEager={videoEager && mediaIndex === 0}
             alignStart={alignStart}
             onZoomImage={onZoomImage}
           />
@@ -869,10 +894,111 @@ function DetailMediaBlock({
   );
 }
 
+/** Defer mounting heavy media until near the viewport (first N stay eager). */
+function LazyMountDetailMediaBlock({
+  eager,
+  videoEager,
+  ...props
+}: {
+  eager: boolean;
+  videoEager?: boolean;
+  item: DetailSrc;
+  title: string;
+  index: number;
+  priority?: boolean;
+  alignStart?: boolean;
+  onZoomImage: (src: string, alt: string) => void;
+}) {
+  const { ref, inView } = useInView({
+    rootMargin: "280px 0px",
+    threshold: 0,
+    triggerOnce: true,
+  });
+  const [mounted, setMounted] = useState(eager);
+
+  useEffect(() => {
+    if (inView) setMounted(true);
+  }, [inView]);
+
+  if (!mounted) {
+    return (
+      <div
+        ref={ref}
+        className="w-full min-h-[min(52vh,520px)] bg-[#1a1a1a]"
+        aria-hidden
+      />
+    );
+  }
+
+  return (
+    <div ref={ref}>
+      <DetailMediaBlock {...props} videoEager={videoEager} />
+    </div>
+  );
+}
+
+/** Load/play video only near viewport to avoid opening-time bandwidth storms. */
+function LazyDetailVideo({
+  src,
+  className,
+  alt,
+  eager = false,
+}: {
+  src: string;
+  className: string;
+  alt: string;
+  eager?: boolean;
+}) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const { ref, inView } = useInView({
+    rootMargin: "220px 0px",
+    threshold: 0.05,
+  });
+  const [shouldLoad, setShouldLoad] = useState(eager);
+
+  useEffect(() => {
+    if (inView) setShouldLoad(true);
+  }, [inView]);
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el || !shouldLoad) return;
+
+    if (inView) {
+      void el.play().catch(() => {});
+    } else {
+      el.pause();
+    }
+  }, [inView, shouldLoad, src]);
+
+  const setRefs = (node: HTMLVideoElement | null) => {
+    videoRef.current = node;
+    ref(node);
+  };
+
+  return (
+    <video
+      ref={setRefs}
+      src={shouldLoad ? src : undefined}
+      className={className}
+      muted
+      loop
+      playsInline
+      controls
+      preload={eager ? "metadata" : "none"}
+      controlsList="nodownload"
+      disablePictureInPicture
+      onContextMenu={(event) => event.preventDefault()}
+      aria-label={alt}
+    />
+  );
+}
+
 function DetailMedia({
   src,
   alt,
   priority = false,
+  videoEager = false,
   paired = false,
   alignStart = false,
   onZoomImage,
@@ -880,6 +1006,7 @@ function DetailMedia({
   src: string;
   alt: string;
   priority?: boolean;
+  videoEager?: boolean;
   paired?: boolean;
   alignStart?: boolean;
   onZoomImage: (src: string, alt: string) => void;
@@ -903,18 +1030,11 @@ function DetailMedia({
             : "project-detail-video";
 
     const video = (
-      <video
+      <LazyDetailVideo
         src={src}
         className={videoClassName}
-        autoPlay
-        muted
-        loop
-        playsInline
-        controls
-        controlsList="nodownload"
-        disablePictureInPicture
-        onContextMenu={(event) => event.preventDefault()}
-        aria-label={alt}
+        alt={alt}
+        eager={videoEager}
       />
     );
 
@@ -956,7 +1076,7 @@ function DetailMedia({
           src={src}
           alt={alt}
           priority={priority}
-          sizes="1152px"
+          sizes="(max-width: 1440px) 100vw, 1152px"
           buttonClassName="block w-[60%] cursor-zoom-in border-0 bg-transparent p-0"
           imageClassName="pointer-events-none block h-auto w-full select-none"
           onZoom={onZoomImage}
@@ -970,7 +1090,11 @@ function DetailMedia({
       src={src}
       alt={alt}
       priority={priority}
-      sizes={paired ? "720px" : "1440px"}
+      sizes={
+        paired
+          ? "(max-width: 768px) 100vw, 720px"
+          : "(max-width: 1440px) 100vw, 1440px"
+      }
       buttonClassName={
         paired
           ? "max-w-full cursor-zoom-in border-0 bg-transparent p-0"
@@ -1020,7 +1144,7 @@ function ProjectCard({ project, onOpen }: ProjectCardProps) {
             alt={project.title}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
-            unoptimized
+            quality={80}
             className="object-cover"
           />
         </div>
@@ -1213,34 +1337,42 @@ export default function ProjectsSection({
     };
 
     // Never leave the modal stuck on a spinner if preload hangs
-    const timeoutId = window.setTimeout(finish, 1200);
+    const timeoutId = window.setTimeout(finish, 1400);
 
-    const firstImage = flattenDetailSrcs(selectedProject.detailImages).find(
-      (src) => !isVideoSrc(src),
-    );
+    const mediaSrcs = getDetailMediaSrcs(selectedProject);
+    const stills = getFirstStillSrcs(mediaSrcs, 2);
 
-    if (!firstImage) {
+    if (stills.length === 0) {
       window.clearTimeout(timeoutId);
       finish();
-      return;
+      return () => {
+        cancelled = true;
+      };
     }
 
-    const img = new window.Image();
-    img.onload = () => {
-      window.clearTimeout(timeoutId);
-      finish();
-    };
-    img.onerror = () => {
-      window.clearTimeout(timeoutId);
-      finish();
-    };
-    img.src = firstImage;
+    let remaining = stills.length;
+    const images = stills.map((src) => {
+      const img = new window.Image();
+      const done = () => {
+        remaining -= 1;
+        if (remaining <= 0) {
+          window.clearTimeout(timeoutId);
+          finish();
+        }
+      };
+      img.onload = done;
+      img.onerror = done;
+      img.src = src;
+      return img;
+    });
 
     return () => {
       cancelled = true;
       window.clearTimeout(timeoutId);
-      img.onload = null;
-      img.onerror = null;
+      for (const img of images) {
+        img.onload = null;
+        img.onerror = null;
+      }
     };
   }, [selectedProject]);
 
@@ -1449,16 +1581,21 @@ export default function ProjectsSection({
                         const firstMediaIndex = blocks.findIndex(
                           (block) => block.type === "media",
                         );
+                        let mediaOrdinal = 0;
 
                         return blocks.map((block, index) => {
                           if (block.type === "media") {
+                            const ordinal = mediaOrdinal;
+                            mediaOrdinal += 1;
                             return (
-                              <DetailMediaBlock
+                              <LazyMountDetailMediaBlock
                                 key={`media-${index}-${
                                   typeof block.src === "string"
                                     ? block.src
                                     : block.src.join("|")
                                 }`}
+                                eager={ordinal < 2}
+                                videoEager={ordinal === 0}
                                 item={block.src}
                                 title={selectedProject.title}
                                 index={index}
@@ -1501,10 +1638,12 @@ export default function ProjectsSection({
                         });
                       })()
                     : selectedProject.detailImages.map((item, index) => (
-                        <DetailMediaBlock
+                        <LazyMountDetailMediaBlock
                           key={
                             typeof item === "string" ? item : item.join("|")
                           }
+                          eager={index < 2}
+                          videoEager={index === 0}
                           item={item}
                           title={selectedProject.title}
                           index={index}
