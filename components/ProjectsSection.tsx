@@ -1167,17 +1167,23 @@ function LazyDetailVideo({
   };
 
   return (
-    <div className="relative w-full leading-none">
+    // Layout classes (pair / inset / start) must stay on the flex/grid item —
+    // do not wrap with w-full or detail-13/14/16 sizing breaks.
+    <div
+      className={`relative leading-none ${className}${
+        ready ? "" : " aspect-[16/10]"
+      }`}
+    >
       {!ready ? (
         <div
-          className={`pointer-events-none absolute inset-0 z-[1] ${DETAIL_SKELETON} !rounded-none min-h-[min(40vh,420px)]`}
+          className={`pointer-events-none absolute inset-0 z-[1] ${DETAIL_SKELETON} !rounded-none`}
           aria-hidden
         />
       ) : null}
       <video
         ref={setRefs}
         src={shouldLoad ? src : undefined}
-        className={`${className} transition-opacity duration-300 ease-out ${
+        className={`block h-auto w-full max-w-full transition-opacity duration-300 ease-out ${
           ready ? "opacity-100" : "opacity-0"
         }`}
         muted
