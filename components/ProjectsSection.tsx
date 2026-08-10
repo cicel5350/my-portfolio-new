@@ -11,7 +11,7 @@ import {
 import { createPortal } from "react-dom";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { ArrowRight, Loader2, X } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import ScrollReveal, {
   ScrollRevealGroup,
   ScrollRevealItem,
@@ -619,6 +619,78 @@ function getProjectHeroStill(project: Project): string | null {
   return getFirstStillSrcs(getDetailMediaSrcs(project), 1)[0] ?? null;
 }
 
+/** Tiny SVG blur stand-in for next/image dynamic srcs (dark detail chrome). */
+const DETAIL_BLUR_DATA_URL =
+  "data:image/svg+xml;charset=utf-8," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="10"><rect width="100%" height="100%" fill="#2a2a2a"/></svg>`,
+  );
+
+const CARD_BLUR_DATA_URL =
+  "data:image/svg+xml;charset=utf-8," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="10"><rect width="100%" height="100%" fill="#e5e5e5"/></svg>`,
+  );
+
+function MediaSkeletonPulse({ className }: { className?: string }) {
+  return (
+    <div
+      aria-hidden
+      className={`skeleton-shimmer skeleton-shimmer--dark ${className ?? ""}`}
+    />
+  );
+}
+
+/** Full detail-modal skeleton — mirrors header + copy + hero media proportions. */
+function DetailPageSkeleton() {
+  return (
+    <div
+      className="project-detail-scroll h-full overflow-y-auto overscroll-contain"
+      aria-busy="true"
+      aria-label="Loading project details"
+    >
+      <div className="relative mx-auto w-full max-w-[1440px] bg-[#1a1a1a]">
+        <header className="px-8 py-8 sm:px-10 sm:py-10">
+          <div className="flex items-start justify-between gap-6">
+            <MediaSkeletonPulse className="h-8 w-[min(70%,28rem)] rounded-md sm:h-9" />
+            <MediaSkeletonPulse className="h-5 w-36 shrink-0 rounded-md" />
+          </div>
+          <div className="mt-6 border-t border-white/15 pt-6">
+            <div className="flex flex-col gap-2.5">
+              <MediaSkeletonPulse className="h-4 w-full rounded" />
+              <MediaSkeletonPulse className="h-4 w-[92%] rounded" />
+              <MediaSkeletonPulse className="h-4 w-[78%] rounded" />
+              <MediaSkeletonPulse className="mt-1 h-4 w-[64%] rounded" />
+            </div>
+          </div>
+        </header>
+        <MediaSkeletonPulse className="aspect-[16/10] w-full rounded-none" />
+        <div className="px-8 py-8 sm:px-10">
+          <MediaSkeletonPulse className="mb-4 h-6 w-48 rounded-md" />
+          <MediaSkeletonPulse className="mb-2 h-4 w-full rounded" />
+          <MediaSkeletonPulse className="mb-2 h-4 w-[88%] rounded" />
+          <MediaSkeletonPulse className="h-4 w-[70%] rounded" />
+        </div>
+        <MediaSkeletonPulse className="mt-2 aspect-[16/10] w-full" />
+      </div>
+    </div>
+  );
+}
+
+function DetailMediaSkeleton({ paired = false }: { paired?: boolean }) {
+  if (paired) {
+    return (
+      <div className="flex w-full gap-3 bg-[#1a1a1a] px-8 py-0 sm:px-10">
+        <MediaSkeletonPulse className="aspect-[16/10] w-1/2 rounded-sm" />
+        <MediaSkeletonPulse className="aspect-[16/10] w-1/2 rounded-sm" />
+      </div>
+    );
+  }
+  return (
+    <MediaSkeletonPulse className="aspect-[16/10] w-full" />
+  );
+}
+
 const preloadedImageUrls = new Set<string>();
 
 /** Warm the browser cache for a single image URL (idempotent). */
@@ -653,6 +725,70 @@ const DETAIL_CONTENT_X = "px-8 sm:px-10";
 /** Outer inset matches media; inner border matches image content width. */
 const DETAIL_RULE_OUTER = DETAIL_CONTENT_X;
 const DETAIL_RULE_INNER = "border-t border-white/15 pb-6 pt-6";
+
+/** Dark-theme shimmer blocks for the detail modal (matches #1a1a1a stage). */
+const DETAIL_SKELETON =
+  "skeleton-shimmer skeleton-shimmer--dark rounded-md";
+/** Light-theme shimmer for project cards on the white homepage. */
+const CARD_SKELETON = "skeleton-shimmer skeleton-shimmer--light rounded-md";
+
+function DetailModalSkeleton() {
+  return (
+    <div
+      className="h-full overflow-y-auto overscroll-contain"
+      aria-busy="true"
+      aria-label="Loading project details"
+    >
+      <div className="relative mx-auto w-full max-w-[1440px] bg-[#1a1a1a]">
+        <header className="px-8 py-8 sm:px-10 sm:py-10">
+          <div className="flex items-start justify-between gap-6">
+            <div className={`${DETAIL_SKELETON} h-8 w-[55%] max-w-xl sm:h-9`} />
+            <div className={`${DETAIL_SKELETON} h-5 w-36 shrink-0 sm:h-6`} />
+          </div>
+          <div className="mt-6 border-t border-white/15 pt-6">
+            <div className="flex flex-col gap-2.5">
+              <div className={`${DETAIL_SKELETON} h-4 w-full`} />
+              <div className={`${DETAIL_SKELETON} h-4 w-[92%]`} />
+              <div className={`${DETAIL_SKELETON} h-4 w-[78%]`} />
+              <div className={`${DETAIL_SKELETON} mt-1 h-4 w-[64%]`} />
+            </div>
+          </div>
+        </header>
+
+        <div className="flex flex-col gap-0">
+          <div
+            className={`${DETAIL_SKELETON} !rounded-none aspect-[16/10] w-full`}
+          />
+          <div className="px-8 py-8 sm:px-10">
+            <div className={`${DETAIL_SKELETON} mb-4 h-7 w-48`} />
+            <div className="flex flex-col gap-2.5">
+              <div className={`${DETAIL_SKELETON} h-4 w-full`} />
+              <div className={`${DETAIL_SKELETON} h-4 w-[88%]`} />
+            </div>
+          </div>
+          <div
+            className={`${DETAIL_SKELETON} !rounded-none aspect-[16/10] w-full`}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MediaSkeleton({
+  className = "",
+  light = false,
+}: {
+  className?: string;
+  light?: boolean;
+}) {
+  return (
+    <div
+      className={`w-full ${light ? CARD_SKELETON : DETAIL_SKELETON} ${className}`}
+      aria-hidden
+    />
+  );
+}
 
 function DetailCopyBlock({
   type,
@@ -821,14 +957,26 @@ function ZoomableDetailImage({
   buttonClassName: string;
   onZoom: (src: string, alt: string) => void;
 }) {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(false);
+  }, [src]);
+
   return (
     <button
       type="button"
-      className={buttonClassName}
+      className={`relative overflow-hidden ${buttonClassName}`}
       onClick={() => onZoom(src, alt)}
       onContextMenu={(event) => event.preventDefault()}
       aria-label={`Enlarge ${alt}`}
     >
+      {!loaded ? (
+        <span
+          className={`absolute inset-0 z-[1] ${DETAIL_SKELETON} !rounded-none`}
+          aria-hidden
+        />
+      ) : null}
       <Image
         src={src}
         alt={alt}
@@ -838,7 +986,11 @@ function ZoomableDetailImage({
         draggable={false}
         priority={priority}
         sizes={sizes}
-        className={imageClassName}
+        className={`${imageClassName} transition-opacity duration-300 ease-out ${
+          loaded ? "opacity-100" : "opacity-0"
+        }`}
+        onLoad={() => setLoaded(true)}
+        onLoadingComplete={() => setLoaded(true)}
         onContextMenu={(event) => event.preventDefault()}
       />
     </button>
@@ -957,11 +1109,9 @@ function LazyMountDetailMediaBlock({
 
   if (!mounted) {
     return (
-      <div
-        ref={ref}
-        className="w-full min-h-[min(52vh,520px)] bg-[#1a1a1a]"
-        aria-hidden
-      />
+      <div ref={ref} className="w-full bg-[#1a1a1a]" aria-hidden>
+        <MediaSkeleton className="!rounded-none aspect-[16/10] min-h-[min(40vh,420px)]" />
+      </div>
     );
   }
 
@@ -990,10 +1140,15 @@ function LazyDetailVideo({
     threshold: 0.05,
   });
   const [shouldLoad, setShouldLoad] = useState(eager);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     if (inView) setShouldLoad(true);
   }, [inView]);
+
+  useEffect(() => {
+    setReady(false);
+  }, [src, shouldLoad]);
 
   useEffect(() => {
     const el = videoRef.current;
@@ -1012,20 +1167,31 @@ function LazyDetailVideo({
   };
 
   return (
-    <video
-      ref={setRefs}
-      src={shouldLoad ? src : undefined}
-      className={className}
-      muted
-      loop
-      playsInline
-      controls
-      preload={eager ? "metadata" : "none"}
-      controlsList="nodownload"
-      disablePictureInPicture
-      onContextMenu={(event) => event.preventDefault()}
-      aria-label={alt}
-    />
+    <div className="relative w-full leading-none">
+      {!ready ? (
+        <div
+          className={`pointer-events-none absolute inset-0 z-[1] ${DETAIL_SKELETON} !rounded-none min-h-[min(40vh,420px)]`}
+          aria-hidden
+        />
+      ) : null}
+      <video
+        ref={setRefs}
+        src={shouldLoad ? src : undefined}
+        className={`${className} transition-opacity duration-300 ease-out ${
+          ready ? "opacity-100" : "opacity-0"
+        }`}
+        muted
+        loop
+        playsInline
+        controls
+        preload={eager ? "metadata" : "none"}
+        controlsList="nodownload"
+        disablePictureInPicture
+        onLoadedData={() => setReady(true)}
+        onContextMenu={(event) => event.preventDefault()}
+        aria-label={alt}
+      />
+    </div>
   );
 }
 
@@ -1156,6 +1322,7 @@ type ProjectCardProps = {
 
 function ProjectCard({ project, onOpen }: ProjectCardProps) {
   const hoverTimerRef = useRef<number | null>(null);
+  const [thumbLoaded, setThumbLoaded] = useState(false);
 
   const clearHoverPreload = () => {
     if (hoverTimerRef.current !== null) {
@@ -1175,6 +1342,10 @@ function ProjectCard({ project, onOpen }: ProjectCardProps) {
   };
 
   useEffect(() => clearHoverPreload, []);
+
+  useEffect(() => {
+    setThumbLoaded(false);
+  }, [project.thumbImage]);
 
   return (
     <article
@@ -1198,6 +1369,12 @@ function ProjectCard({ project, onOpen }: ProjectCardProps) {
       className="group flex flex-col"
     >
       <div className="relative aspect-[16/10] overflow-hidden rounded-3xl bg-[#f3f4f6]">
+        {!thumbLoaded ? (
+          <div
+            className={`absolute inset-0 z-[1] ${CARD_SKELETON} !rounded-3xl`}
+            aria-hidden
+          />
+        ) : null}
         {/*
           Blur/scale stay on a pointer-events-none layer so Chromium hit-testing
           does not flicker while the section-level cursor follows the pointer.
@@ -1209,7 +1386,11 @@ function ProjectCard({ project, onOpen }: ProjectCardProps) {
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
             quality={80}
-            className="object-cover"
+            className={`object-cover transition-opacity duration-300 ease-out ${
+              thumbLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            onLoad={() => setThumbLoaded(true)}
+            onLoadingComplete={() => setThumbLoaded(true)}
           />
         </div>
 
@@ -1578,13 +1759,7 @@ export default function ProjectsSection({
           </button>
 
           {detailLoading ? (
-            <div className="flex h-full items-center justify-center">
-              <Loader2
-                className="h-8 w-8 animate-spin text-white/70"
-                strokeWidth={1.75}
-                aria-label="Loading"
-              />
-            </div>
+            <DetailModalSkeleton />
           ) : (
             <div
               ref={detailScrollRef}
