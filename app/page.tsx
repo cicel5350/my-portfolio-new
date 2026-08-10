@@ -149,6 +149,7 @@ export default function Home() {
   const [capabilitiesInView, setCapabilitiesInView] = useState(false);
   const [projectsInView, setProjectsInView] = useState(false);
   const [contactInView, setContactInView] = useState(false);
+  const [marqueeReady, setMarqueeReady] = useState(false);
 
   const heroRef = useRef<HTMLElement | null>(null);
   const avatarSlotRef = useRef<HTMLDivElement | null>(null);
@@ -184,18 +185,21 @@ export default function Home() {
   const copyY = useTransform(smoothProgress, [0, 1], [0, -320]);
   const avatarY = useTransform(smoothProgress, [0, 1], [0, -400]);
 
-  // Pin marquee strip to the avatar slot (layout box only — no scroll parallax)
+  // Pin marquee strip to the avatar slot (layout box only — no scroll parallax).
+  // Stay invisible until the first real measure so we never flash top:50% then jump.
   useLayoutEffect(() => {
     const hero = heroRef.current;
     const slot = avatarSlotRef.current;
     const card = avatarCardRef.current;
     if (!hero || !slot) return;
 
+    let revealed = false;
+    let trackRaf = 0;
+    let tracking = true;
+
     const syncMarquee = () => {
       const heroRect = hero.getBoundingClientRect();
       const slotRect = slot.getBoundingClientRect();
-      // Slot has no parallax transform; card is 300×300 inside it.
-      // Center the strip on the card within the slot so they share one midline.
       const height = card?.offsetHeight || slot.offsetHeight || 300;
       const top =
         slotRect.top -
@@ -204,21 +208,38 @@ export default function Home() {
 
       hero.style.setProperty("--hero-marquee-top", `${top}px`);
       hero.style.setProperty("--hero-marquee-height", `${height}px`);
+
+      if (!revealed) {
+        revealed = true;
+        setMarqueeReady(true);
+      }
     };
 
     syncMarquee();
-    const rafId = window.requestAnimationFrame(syncMarquee);
-    // Re-sync after ScrollReveal entrance settles
-    const timeoutId = window.setTimeout(syncMarquee, 700);
+
+    // Keep locking to the slot while ScrollReveal / fonts settle (avoids a late jump)
+    const track = () => {
+      syncMarquee();
+      if (tracking) trackRaf = window.requestAnimationFrame(track);
+    };
+    trackRaf = window.requestAnimationFrame(track);
+
+    const stopTrackId = window.setTimeout(() => {
+      tracking = false;
+      window.cancelAnimationFrame(trackRaf);
+      syncMarquee();
+    }, 900);
 
     const observer = new ResizeObserver(syncMarquee);
     observer.observe(hero);
     observer.observe(slot);
+    if (card) observer.observe(card);
     window.addEventListener("resize", syncMarquee);
 
     return () => {
-      window.cancelAnimationFrame(rafId);
-      window.clearTimeout(timeoutId);
+      tracking = false;
+      window.cancelAnimationFrame(trackRaf);
+      window.clearTimeout(stopTrackId);
       observer.disconnect();
       window.removeEventListener("resize", syncMarquee);
     };
@@ -310,10 +331,12 @@ export default function Home() {
       >
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 z-0 flex items-center overflow-hidden"
+          className="pointer-events-none absolute inset-x-0 z-0 flex items-center overflow-hidden transition-opacity duration-200 ease-out"
           style={{
-            top: "var(--hero-marquee-top, 50%)",
+            top: "var(--hero-marquee-top, 0px)",
             height: "var(--hero-marquee-height, 300px)",
+            opacity: marqueeReady ? 1 : 0,
+            visibility: marqueeReady ? "visible" : "hidden",
           }}
         >
           <motion.div
