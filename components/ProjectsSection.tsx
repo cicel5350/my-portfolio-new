@@ -614,6 +614,41 @@ function getFirstStillSrcs(srcs: readonly string[], count: number) {
   return stills;
 }
 
+/** First still shown in the detail modal (hero). Skips videos. */
+function getProjectHeroStill(project: Project): string | null {
+  return getFirstStillSrcs(getDetailMediaSrcs(project), 1)[0] ?? null;
+}
+
+const preloadedImageUrls = new Set<string>();
+
+/** Warm the browser cache for a single image URL (idempotent). */
+function preloadImage(url: string) {
+  if (!url || preloadedImageUrls.has(url)) return;
+  preloadedImageUrls.add(url);
+
+  if (typeof document !== "undefined") {
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = url;
+    link.dataset.intentPreload = url;
+    document.head.appendChild(link);
+  }
+
+  const img = new window.Image();
+  img.decoding = "async";
+  img.src = url;
+}
+
+const HOVER_PRELOAD_DELAY_MS = 100;
+
+function canHoverPreload() {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches
+  );
+}
+
 const DETAIL_CONTENT_X = "px-8 sm:px-10";
 /** Outer inset matches media; inner border matches image content width. */
 const DETAIL_RULE_OUTER = DETAIL_CONTENT_X;
@@ -1120,6 +1155,27 @@ type ProjectCardProps = {
 };
 
 function ProjectCard({ project, onOpen }: ProjectCardProps) {
+  const hoverTimerRef = useRef<number | null>(null);
+
+  const clearHoverPreload = () => {
+    if (hoverTimerRef.current !== null) {
+      window.clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+  };
+
+  const scheduleHoverPreload = () => {
+    if (!canHoverPreload()) return;
+    clearHoverPreload();
+    hoverTimerRef.current = window.setTimeout(() => {
+      hoverTimerRef.current = null;
+      const hero = getProjectHeroStill(project);
+      if (hero) preloadImage(hero);
+    }, HOVER_PRELOAD_DELAY_MS);
+  };
+
+  useEffect(() => clearHoverPreload, []);
+
   return (
     <article
       role="button"
@@ -1130,6 +1186,14 @@ function ProjectCard({ project, onOpen }: ProjectCardProps) {
           event.preventDefault();
           onOpen(project);
         }
+      }}
+      onPointerEnter={(event) => {
+        if (event.pointerType !== "mouse") return;
+        scheduleHoverPreload();
+      }}
+      onPointerLeave={(event) => {
+        if (event.pointerType !== "mouse") return;
+        clearHoverPreload();
       }}
       className="group flex flex-col"
     >
