@@ -1,0 +1,280 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-playfair);
+}
+
+/* Prefer native scrolling for smoothness */
+html,
+body {
+  scroll-behavior: auto;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.font-inter {
+  font-family: var(--font-inter), "Inter", system-ui, sans-serif;
+}
+
+.font-roboto-mono {
+  font-family: var(--font-roboto-mono), "Roboto Mono", ui-monospace, monospace;
+}
+
+.font-pingfang {
+  font-family: "PingFang SC", "PingFang TC", "Hiragino Sans GB", "Microsoft YaHei",
+    sans-serif;
+}
+
+/*
+  Capabilities folders — flex rows + HTML/CSS tab + body (no SVG mask).
+*/
+.capabilities-folders {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 920px;
+  margin-inline: auto;
+}
+
+.capabilities-folders__row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.capabilities-folders__row--1 {
+  z-index: 1;
+}
+
+.capabilities-folders__row--2 {
+  margin-top: -70px;
+  z-index: 10;
+}
+
+.capabilities-folders__row--3 {
+  margin-top: -80px;
+  z-index: 20;
+}
+
+.capabilities-folders__item {
+  position: relative;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.folder-card {
+  --folder-color: #f9de8c;
+  --folder-tab-width: 120px;
+  --folder-tab-height: 32px;
+  --folder-slope-width: 48px;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+  min-height: clamp(11rem, 24vw, 14.5rem);
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.folder-card__tab {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  width: var(--folder-tab-width);
+  height: var(--folder-tab-height);
+  margin: 0;
+  background-color: var(--folder-color);
+  border-radius: 20px 0 0 0;
+}
+
+/*
+  Smooth shoulder: right triangle / soft curve from tab top-right
+  down into the body — no V-notch gap.
+*/
+.folder-card__tab::after {
+  content: "";
+  position: absolute;
+  left: calc(100% - 0.5px);
+  top: 0;
+  width: var(--folder-slope-width);
+  height: var(--folder-tab-height);
+  background-color: var(--folder-color);
+  clip-path: polygon(
+    0% 0%,
+    12% 4%,
+    28% 16%,
+    48% 36%,
+    68% 60%,
+    84% 82%,
+    100% 100%,
+    0% 100%
+  );
+}
+
+.folder-card__body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  margin-top: -1px;
+  padding: 0 30px 24px;
+  background-color: var(--folder-color);
+  border-radius: 0 28px 0 0;
+}
+
+.folder-card__index {
+  flex: 0 0 auto;
+  margin: 0;
+  font-family: var(--font-roboto-mono), "Roboto Mono", ui-monospace, monospace;
+  font-size: clamp(0.72rem, 1.55vw, 1rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: #000;
+}
+
+.folder-card__title {
+  flex: 0 0 auto;
+  display: block;
+  margin: 32px 0 0;
+  padding: 0;
+  text-align: left;
+  font-family: var(--font-inter), "Inter", system-ui, sans-serif;
+  font-size: clamp(1.75rem, 4vw, 3.1rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #000;
+}
+
+.project-detail-scroll {
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.project-detail-scroll.is-scrolling {
+  scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
+}
+
+.project-detail-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.project-detail-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.project-detail-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.001);
+  border-radius: 999px;
+}
+
+.project-detail-scroll.is-scrolling::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.project-detail-scroll.is-scrolling::-webkit-scrollbar-thumb:hover,
+.project-detail-scroll.is-scrolling::-webkit-scrollbar-thumb:active {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.project-detail-video {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.project-detail-video--start {
+  width: 100%;
+  max-width: 100%;
+}
+
+.project-detail-video--inset {
+  width: 60%;
+  max-width: 60%;
+}
+
+.project-detail-video--w1230 {
+  width: min(1230px, 100%);
+  max-width: min(1230px, 100%);
+  height: auto;
+}
+
+.project-detail-video-frame--dark {
+  display: flex;
+  width: 100%;
+  max-width: 1440px;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  background: #000000;
+  padding-block: 80px;
+}
+
+.project-detail-video-frame--start {
+  width: 100%;
+  max-width: 100%;
+  justify-content: flex-start;
+}
+
+.project-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2vw, 32px);
+  box-sizing: border-box;
+}
+
+.project-detail-row--panel {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  background: #ffffff;
+  padding: clamp(28px, 4vw, 56px) clamp(16px, 3vw, 40px);
+}
+
+.project-detail-row--start {
+  justify-content: flex-start;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+.project-detail-video--pair {
+  flex: 0 1 auto;
+  width: auto;
+  max-width: calc((100% - clamp(12px, 2vw, 32px)) / 2);
+  height: auto;
+}

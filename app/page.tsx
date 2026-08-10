@@ -1,0 +1,637 @@
+"use client";
+
+import Image from "next/image";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  AnimatePresence,
+  motion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import { ArrowDown } from "lucide-react";
+import AboutSection from "@/components/AboutSection";
+import CapabilitiesSection from "@/components/CapabilitiesSection";
+import ContactSection from "@/components/ContactSection";
+import ProjectsSection from "@/components/ProjectsSection";
+import ScrollReveal from "@/components/ScrollReveal";
+import SiteNav, { scrollToNavTarget } from "@/components/SiteNav";
+
+const navItems = [
+  { label: "Home", href: "#home" },
+  { label: "About", href: "#about" },
+  { label: "Capabilities", href: "#capabilities" },
+  { label: "Projects", href: "#projects" },
+  { label: "Contact", href: "#contact" },
+] as const;
+
+const roles = [
+  "Branding",
+  "Collaborative Team Player",
+  "UI/UX Designer",
+  "Product Design",
+  "Vibe Coding",
+] as const;
+
+const floatingShapes = [
+  {
+    src: "/3.png",
+    position:
+      "absolute left-[-4%] top-[-2%] z-[1] w-[8.4rem] sm:w-[11.55rem] md:w-[12.6rem]",
+    duration: 5.4,
+    delay: 0.6,
+    baseRotate: 14,
+  },
+  {
+    src: "/球.png",
+    position:
+      "absolute left-[-4%] top-[36%] z-[1] w-[8.4rem] sm:w-[11.55rem] md:w-[12.6rem]",
+    duration: 5.1,
+    delay: 0.4,
+  },
+  {
+    src: "/圆柱体.png",
+    position:
+      "absolute bottom-[-2%] left-[2%] z-[1] w-[10.5rem] sm:w-[12.6rem] md:w-[14.7rem]",
+    duration: 4.8,
+    delay: 0.8,
+    baseRotate: -22,
+  },
+  {
+    src: "/star.png",
+    position:
+      "absolute right-[0%] top-[-4%] z-[1] w-[9.45rem] sm:w-[11.55rem] md:w-[13.65rem]",
+    duration: 3.9,
+    delay: 0.2,
+  },
+  {
+    src: "/2.png",
+    position:
+      "absolute right-[-4%] top-[36%] z-[1] w-[9.45rem] sm:w-[11.55rem] md:w-[12.6rem]",
+    duration: 4.5,
+    delay: 1,
+    baseRotate: 18,
+  },
+  {
+    src: "/01.png",
+    position:
+      "absolute bottom-[0%] right-[1%] z-[1] w-[9.45rem] sm:w-[11.55rem] md:w-[13.65rem]",
+    duration: 4.2,
+    delay: 0,
+  },
+] as const;
+
+const clientAvatars = [
+  { src: "/头像1.png", alt: "Client 1" },
+  { src: "/头像2.png", alt: "Client 2" },
+  { src: "/头像3.png", alt: "Client 3" },
+] as const;
+
+const marqueeText = "CICEL BRONX";
+const circleLeftText = "SCROLL DOWN";
+const circleRightText = "AND KNOW ME BETTER";
+/** Outer ring stays fixed; inner ring pulled in; text sits mid-gap. */
+const CIRCLE_INNER_R = 46;
+const CIRCLE_OUTER_R = 86;
+const CIRCLE_TEXT_R = (CIRCLE_INNER_R + CIRCLE_OUTER_R) / 2;
+const CIRCLE_FONT_SIZE = 14.5;
+
+/** Point on the text ring: offset 0 at 12 o'clock, clockwise. */
+function pointOnScrollCircle(offset: number, radius = CIRCLE_TEXT_R) {
+  const theta = offset * Math.PI * 2;
+  return {
+    x: 100 + radius * Math.sin(theta),
+    y: 100 - radius * Math.cos(theta),
+  };
+}
+
+/** Star offsets in the open gaps between the two unequal arc phrases. */
+function getCircleStarOffsets() {
+  const circumference = 2 * Math.PI * CIRCLE_TEXT_R;
+  const charWidth = CIRCLE_FONT_SIZE * 0.62;
+  const rightHalf =
+    (circleRightText.length * charWidth) / circumference / 2;
+  const leftHalf = (circleLeftText.length * charWidth) / circumference / 2;
+
+  const rightCenter = 0.25;
+  const leftCenter = 0.75;
+  const rightEnd = rightCenter + rightHalf;
+  const leftStart = leftCenter - leftHalf;
+  const leftEnd = leftCenter + leftHalf;
+  const rightStart = rightCenter - rightHalf;
+
+  return {
+    // Between right phrase → left phrase (lower arc)
+    afterRight: (rightEnd + leftStart) / 2,
+    // Between left phrase → right phrase (upper arc, wraps past 12 o'clock)
+    afterLeft: ((leftEnd + rightStart + 1) / 2) % 1,
+  };
+}
+
+const circleStarOffsets = getCircleStarOffsets();
+const circleStarA = pointOnScrollCircle(circleStarOffsets.afterLeft);
+const circleStarB = pointOnScrollCircle(circleStarOffsets.afterRight);
+
+export default function Home() {
+  type NavLabel = (typeof navItems)[number]["label"];
+  const [activeItem, setActiveItem] = useState<NavLabel>("Home");
+  const [lockedNav, setLockedNav] = useState<NavLabel | null>(null);
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [isCardHovered, setIsCardHovered] = useState(false);
+  const [aboutInView, setAboutInView] = useState(false);
+  const [capabilitiesInView, setCapabilitiesInView] = useState(false);
+  const [projectsInView, setProjectsInView] = useState(false);
+  const [contactInView, setContactInView] = useState(false);
+
+  const heroRef = useRef<HTMLElement | null>(null);
+  const avatarSlotRef = useRef<HTMLDivElement | null>(null);
+  const avatarCardRef = useRef<HTMLDivElement | null>(null);
+  const { ref: homeInViewRef, inView: homeInView } = useInView({
+    threshold: 0.35,
+    rootMargin: "-15% 0px -35% 0px",
+  });
+
+  const setHeroRef = useCallback(
+    (node: HTMLElement | null) => {
+      heroRef.current = node;
+      homeInViewRef(node);
+    },
+    [homeInViewRef],
+  );
+
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Soft AE-like easing: spring-smooth scroll values for silky back-and-forth
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 90,
+    damping: 22,
+    mass: 0.35,
+    restDelta: 0.001,
+  });
+
+  // Leave faster than normal scroll so these clear the viewport before About
+  const shapesY = useTransform(smoothProgress, [0, 1], [0, -520]);
+  const copyY = useTransform(smoothProgress, [0, 1], [0, -320]);
+  const avatarY = useTransform(smoothProgress, [0, 1], [0, -400]);
+
+  // Pin marquee strip to the avatar slot (layout box only — no scroll parallax)
+  useLayoutEffect(() => {
+    const hero = heroRef.current;
+    const slot = avatarSlotRef.current;
+    const card = avatarCardRef.current;
+    if (!hero || !slot) return;
+
+    const syncMarquee = () => {
+      const heroRect = hero.getBoundingClientRect();
+      const slotRect = slot.getBoundingClientRect();
+      // Slot has no parallax transform; card is 300×300 inside it.
+      // Center the strip on the card within the slot so they share one midline.
+      const height = card?.offsetHeight || slot.offsetHeight || 300;
+      const top =
+        slotRect.top -
+        heroRect.top +
+        (slot.offsetHeight - height) / 2;
+
+      hero.style.setProperty("--hero-marquee-top", `${top}px`);
+      hero.style.setProperty("--hero-marquee-height", `${height}px`);
+    };
+
+    syncMarquee();
+    const rafId = window.requestAnimationFrame(syncMarquee);
+    // Re-sync after ScrollReveal entrance settles
+    const timeoutId = window.setTimeout(syncMarquee, 700);
+
+    const observer = new ResizeObserver(syncMarquee);
+    observer.observe(hero);
+    observer.observe(slot);
+    window.addEventListener("resize", syncMarquee);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.clearTimeout(timeoutId);
+      observer.disconnect();
+      window.removeEventListener("resize", syncMarquee);
+    };
+  }, []);
+
+  const handleAboutInView = useCallback((inView: boolean) => {
+    setAboutInView(inView);
+  }, []);
+
+  const handleCapabilitiesInView = useCallback((inView: boolean) => {
+    setCapabilitiesInView(inView);
+  }, []);
+
+  const handleProjectsInView = useCallback((inView: boolean) => {
+    setProjectsInView(inView);
+  }, []);
+
+  const handleContactInView = useCallback((inView: boolean) => {
+    setContactInView(inView);
+  }, []);
+
+  const handleNavNavigate = useCallback((label: string) => {
+    const next = label as NavLabel;
+    setLockedNav(next);
+    setActiveItem(next);
+  }, []);
+
+  useEffect(() => {
+    if (!lockedNav) return;
+    const timer = window.setTimeout(() => setLockedNav(null), 1200);
+    return () => window.clearTimeout(timer);
+  }, [lockedNav]);
+
+  useEffect(() => {
+    if (lockedNav) {
+      const arrived =
+        (lockedNav === "Home" && homeInView) ||
+        (lockedNav === "About" && aboutInView) ||
+        (lockedNav === "Capabilities" && capabilitiesInView) ||
+        (lockedNav === "Projects" && projectsInView) ||
+        (lockedNav === "Contact" && contactInView);
+
+      if (arrived) {
+        setLockedNav(null);
+      }
+      return;
+    }
+
+    if (contactInView) {
+      setActiveItem("Contact");
+    } else if (projectsInView) {
+      setActiveItem("Projects");
+    } else if (capabilitiesInView) {
+      setActiveItem("Capabilities");
+    } else if (aboutInView) {
+      setActiveItem("About");
+    } else if (homeInView) {
+      setActiveItem("Home");
+    }
+  }, [
+    aboutInView,
+    capabilitiesInView,
+    contactInView,
+    homeInView,
+    lockedNav,
+    projectsInView,
+  ]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setRoleIndex((current) => (current + 1) % roles.length);
+    }, 2500);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-white">
+      <SiteNav
+        items={navItems}
+        activeItem={activeItem}
+        onNavigate={handleNavNavigate}
+      />
+
+      <section
+        id="home"
+        ref={setHeroRef}
+        className="relative flex min-h-[calc(100vh-5rem)] scroll-mt-28 items-center justify-center overflow-hidden px-4 pb-44 pt-6 sm:pb-52 sm:pt-10 lg:pb-64"
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 z-0 flex items-center overflow-hidden"
+          style={{
+            top: "var(--hero-marquee-top, 50%)",
+            height: "var(--hero-marquee-height, 300px)",
+          }}
+        >
+          <motion.div
+            className="flex h-full items-center whitespace-nowrap"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ repeat: Infinity, ease: "linear", duration: 55 }}
+          >
+            {[0, 1].map((copy) => (
+              <span
+                key={copy}
+                className="inline-block pr-8 select-none font-black leading-none tracking-tighter text-black"
+                style={{
+                  fontSize: "var(--hero-marquee-height, 300px)",
+                }}
+              >
+                {`${marqueeText} ${marqueeText} ${marqueeText} `}
+              </span>
+            ))}
+          </motion.div>
+        </div>
+
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-[calc(50%-70px)] z-[1] h-[32rem] w-[min(100vw,30rem)] -translate-x-1/2 -translate-y-1/2 sm:h-[42rem] sm:w-[50rem] md:h-[46rem] md:w-[58rem]"
+        >
+          <motion.div
+            style={{ y: shapesY }}
+            className="relative h-full w-full will-change-transform transform-gpu"
+          >
+            {floatingShapes.map((shape) => {
+              const baseRotate = "baseRotate" in shape ? shape.baseRotate : 0;
+
+              return (
+                <div key={shape.src} className={shape.position}>
+                  <motion.div
+                    animate={{
+                      y: [-12, 12, -12],
+                      rotate: [
+                        baseRotate,
+                        baseRotate + 8,
+                        baseRotate - 8,
+                        baseRotate,
+                      ],
+                    }}
+                    transition={{
+                      duration: shape.duration,
+                      delay: shape.delay,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <Image
+                      src={shape.src}
+                      alt=""
+                      width={220}
+                      height={220}
+                      className="h-auto w-full"
+                    />
+                  </motion.div>
+                </div>
+              );
+            })}
+          </motion.div>
+        </div>
+
+        <div
+          className="relative z-10 flex w-full max-w-3xl translate-y-[30px] flex-col items-center text-center"
+          data-nav-focus
+        >
+          <motion.div
+            style={{ y: copyY }}
+            className="flex w-full flex-col items-center will-change-transform transform-gpu"
+          >
+            <div className="-translate-y-2 flex w-full flex-col items-center">
+            <ScrollReveal>
+              <h1 className="font-inter text-[48px] font-semibold leading-tight tracking-tight text-black">
+                Hi, I&apos;m{" "}
+                <span className="font-display text-[48px] font-bold italic">
+                  Cicel!
+                </span>
+              </h1>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.08} className="w-full">
+              <div className="relative mt-2 flex h-7 w-full items-center justify-center overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={roles[roleIndex]}
+                    initial={{ y: 18, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -18, opacity: 0 }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
+                    className="font-inter absolute text-[20px] font-normal text-[#9ca3af]"
+                  >
+                    {roles[roleIndex]}
+                  </motion.p>
+                </AnimatePresence>
+              </div>
+            </ScrollReveal>
+            </div>
+          </motion.div>
+
+          <ScrollReveal delay={0.12} className="w-full">
+            <div
+              ref={avatarSlotRef}
+              className="relative mt-3 flex w-full items-center justify-center sm:mt-4"
+            >
+              <motion.div
+                style={{ y: avatarY }}
+                className="relative z-10 flex w-full items-center justify-center will-change-transform transform-gpu"
+              >
+                <div
+                  ref={avatarCardRef}
+                  className="relative z-10 h-[300px] w-[300px] cursor-pointer [perspective:1200px]"
+                  onMouseEnter={() => setIsCardHovered(true)}
+                  onMouseLeave={() => setIsCardHovered(false)}
+                >
+                <motion.div
+                  className="absolute inset-0 overflow-hidden rounded-[40px] bg-[#5b7cff] shadow-[0_22px_50px_rgba(0,0,0,0.18)] [backface-visibility:hidden]"
+                  animate={{ rotateY: isCardHovered ? 180 : 0 }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  style={{
+                    borderRadius: 40,
+                    transformStyle: "preserve-3d",
+                  }}
+                >
+                  <Image
+                    src="/avatar-hero.jpg"
+                    alt="Cicel avatar"
+                    fill
+                    priority
+                    unoptimized
+                    sizes="300px"
+                    className="object-cover"
+                  />
+                </motion.div>
+
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-[40px] border border-white/70 bg-white/70 shadow-[0_22px_50px_rgba(0,0,0,0.12)] backdrop-blur-[20px] [-webkit-backdrop-filter:blur(20px)] [backface-visibility:hidden]"
+                  initial={false}
+                  animate={{ rotateY: isCardHovered ? 0 : -180 }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  style={{
+                    borderRadius: 40,
+                    backfaceVisibility: "hidden",
+                    transformStyle: "preserve-3d",
+                  }}
+                >
+                  <motion.div
+                    className="absolute inset-[14%]"
+                    animate={{ rotate: isCardHovered ? 360 : 0 }}
+                    transition={{
+                      repeat: isCardHovered ? Infinity : 0,
+                      ease: "linear",
+                      duration: 12,
+                    }}
+                  >
+                    <svg
+                      viewBox="0 0 200 200"
+                      className="h-full w-full"
+                      aria-hidden
+                    >
+                      <defs>
+                        {/* Starts at 12 o'clock, clockwise — mid track between rings */}
+                        <path
+                          id="scroll-circle"
+                          d={`M 100,${100 - CIRCLE_TEXT_R} A ${CIRCLE_TEXT_R},${CIRCLE_TEXT_R} 0 1,1 ${99.999},${100 - CIRCLE_TEXT_R}`}
+                        />
+                      </defs>
+                      <circle
+                        cx="100"
+                        cy="100"
+                        r={CIRCLE_INNER_R}
+                        fill="none"
+                        stroke="rgba(0,0,0,0.80)"
+                        strokeWidth="0.75"
+                      />
+                      <circle
+                        cx="100"
+                        cy="100"
+                        r={CIRCLE_OUTER_R}
+                        fill="none"
+                        stroke="rgba(0,0,0,0.80)"
+                        strokeWidth="0.75"
+                      />
+
+                      {/* Right arc phrase */}
+                      <text
+                        className="fill-black font-inter uppercase"
+                        dominantBaseline="middle"
+                        style={{
+                          fontSize: `${CIRCLE_FONT_SIZE}px`,
+                          fontWeight: 600,
+                        }}
+                      >
+                        <textPath
+                          href="#scroll-circle"
+                          startOffset="25%"
+                          textAnchor="middle"
+                        >
+                          {circleRightText}
+                        </textPath>
+                      </text>
+
+                      {/* Left arc phrase */}
+                      <text
+                        className="fill-black font-inter uppercase"
+                        dominantBaseline="middle"
+                        style={{
+                          fontSize: `${CIRCLE_FONT_SIZE}px`,
+                          fontWeight: 600,
+                        }}
+                      >
+                        <textPath
+                          href="#scroll-circle"
+                          startOffset="75%"
+                          textAnchor="middle"
+                        >
+                          {circleLeftText}
+                        </textPath>
+                      </text>
+
+                      {/* Stars sit in the open gaps between the two phrases */}
+                      <g fill="#111111">
+                        <path
+                          transform={`translate(${circleStarA.x} ${circleStarA.y}) scale(0.9)`}
+                          d="M0-5.6 L1.4-1.4 L5.6 0 L1.4 1.4 L0 5.6 L-1.4 1.4 L-5.6 0 L-1.4-1.4 Z"
+                        />
+                        <path
+                          transform={`translate(${circleStarB.x} ${circleStarB.y}) scale(0.9)`}
+                          d="M0-5.6 L1.4-1.4 L5.6 0 L1.4 1.4 L0 5.6 L-1.4 1.4 L-5.6 0 L-1.4-1.4 Z"
+                        />
+                      </g>
+                    </svg>
+                  </motion.div>
+
+                  <motion.div
+                    className="relative z-10"
+                    animate={isCardHovered ? { y: [-4, 5, -4] } : { y: 0 }}
+                    transition={
+                      isCardHovered
+                        ? {
+                            duration: 1.15,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          }
+                        : { duration: 0.2 }
+                    }
+                  >
+                    <ArrowDown
+                      className="h-11 w-11 text-black sm:h-12 sm:w-12"
+                      strokeWidth={1.15}
+                    />
+                  </motion.div>
+                </motion.div>
+              </div>
+              </motion.div>
+            </div>
+          </ScrollReveal>
+
+          <div className="flex w-full flex-col items-center">
+            <ScrollReveal delay={0.18}>
+              <div className="relative z-10 mt-8 flex items-center gap-3 sm:mt-10">
+                <div className="flex items-center -space-x-2.5">
+                  {clientAvatars.map((client) => (
+                    <div
+                      key={client.alt}
+                      className="relative h-8 w-8 overflow-hidden rounded-full border-2 border-white shadow-sm sm:h-9 sm:w-9"
+                    >
+                      <Image
+                        src={client.src}
+                        alt={client.alt}
+                        fill
+                        sizes="36px"
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <p className="font-inter text-sm font-medium text-[#6b7280] sm:text-[15px]">
+                  80+ Happy Clients
+                </p>
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.24}>
+              <motion.a
+                href="#contact"
+                onClick={(event) => {
+                  event.preventDefault();
+                  scrollToNavTarget("#contact");
+                  history.pushState(null, "", "#contact");
+                }}
+                className="font-inter group relative z-10 mt-5 inline-flex h-[4.625rem] items-center overflow-hidden rounded-full border-[5px] border-[#EFF0FF] bg-white pl-8 text-xl font-bold text-black shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-shadow duration-300 hover:shadow-none sm:mt-6 sm:h-[5.125rem] sm:pl-10 sm:text-2xl"
+              >
+                <span className="pr-8 transition-[padding] duration-300 ease-out group-hover:pr-3 sm:pr-10 sm:group-hover:pr-4">
+                  Let&apos;s Work Together!
+                </span>
+                <span className="flex h-full w-0 shrink-0 items-center overflow-hidden transition-[width] duration-500 ease-out group-hover:w-16 sm:group-hover:w-[4.5rem]">
+                  <span className="flex size-16 shrink-0 translate-x-full rotate-[240deg] items-center justify-center rounded-full bg-black transition-transform duration-500 ease-in-out group-hover:translate-x-0 group-hover:rotate-0 sm:size-[4.5rem]">
+                    <ArrowDown
+                      className="h-7 w-7 text-white sm:h-8 sm:w-8"
+                      strokeWidth={1.5}
+                    />
+                  </span>
+                </span>
+              </motion.a>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      <div className="flex flex-col gap-88 sm:gap-[26rem] lg:gap-[32rem]">
+        <AboutSection onInViewChange={handleAboutInView} />
+        <CapabilitiesSection onInViewChange={handleCapabilitiesInView} />
+        <ProjectsSection onInViewChange={handleProjectsInView} />
+      </div>
+      <ContactSection onInViewChange={handleContactInView} />
+    </div>
+  );
+}
