@@ -1,0 +1,101 @@
+WEBP / MEDIA CHECK — public/projects
+Generated: 2026-08-10 15:03
+
+1) FILE COUNTS BY EXTENSION (recursive)
+  jpg/jpeg: 0 (jpg=0, jpeg=0)
+  png:      16
+  webp:     61
+  mp4:      18
+  other:    1 (.aep=1)
+  total:    96
+
+2) PER-PROJECT IMAGE FILES (jpg/jpeg/png/webp)
+   Notes: BOTH = same basename has .png and .webp; webp-only / png-only as labeled.
+
+--- Alibaba Cloud Official Site Design ---
+  images: cover.webp, detail-1.webp, detail-15.webp, detail-17.webp, detail-18.webp, detail-19.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-5.webp, detail-6.webp, detail-7.webp, detail-8.webp, detail-9.webp
+  BOTH png+webp: none
+  webp-only:     cover, detail-1, detail-15, detail-17, detail-18, detail-19, detail-2, detail-3, detail-4, detail-5, detail-6, detail-7, detail-8, detail-9
+  png-only:      none
+
+--- Aura Stream ---
+  images: cover.webp, detail-1.webp, detail-2.webp
+  BOTH png+webp: none
+  webp-only:     cover, detail-1, detail-2
+  png-only:      none
+
+--- Data Visualization ---
+  images: cover.webp, detail-1.webp, detail-10.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-6.webp, detail-7.webp, detail-8.webp
+  BOTH png+webp: none
+  webp-only:     cover, detail-1, detail-10, detail-2, detail-3, detail-4, detail-6, detail-7, detail-8
+  png-only:      none
+
+--- Digital Agriculture Platform ---
+  images: cover.webp, detail-1.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-5.webp, detail-6.webp, detail-7.webp
+  BOTH png+webp: none
+  webp-only:     cover, detail-1, detail-2, detail-3, detail-4, detail-5, detail-6, detail-7
+  png-only:      none
+
+--- Intelligent Data Governance Platform ---
+  images: cover.webp, detail-1.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-6.webp
+  BOTH png+webp: none
+  webp-only:     cover, detail-1, detail-2, detail-3, detail-4, detail-6
+  png-only:      none
+
+--- Intelligent Defense System Design ---
+  images: cover.webp
+  BOTH png+webp: none
+  webp-only:     cover
+  png-only:      none
+
+--- Qwen Cloud Ticket ---
+  images: cover.webp, detail-1.webp, detail-10.webp, detail-11.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-5.webp, detail-6.webp, detail-7.webp, detail-8.webp, detail-9.webp
+  BOTH png+webp: none
+  webp-only:     cover, detail-1, detail-10, detail-11, detail-2, detail-3, detail-4, detail-5, detail-6, detail-7, detail-8, detail-9
+  png-only:      none
+
+--- track-protect ---
+  images: cover.webp, detail-1.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-5.webp, detail-6.webp, detail-7.webp
+  BOTH png+webp: none
+  webp-only:     cover, detail-1, detail-2, detail-3, detail-4, detail-5, detail-6, detail-7
+  png-only:      none
+
+3) SAMPLE: cover.webp / root *.webp / detail-*.webp
+
+Alibaba Cloud Official Site Design:
+  cover.webp: YES
+  root *.webp: cover.webp, detail-1.webp, detail-15.webp, detail-17.webp, detail-18.webp, detail-19.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-5.webp, detail-6.webp, detail-7.webp, detail-8.webp, detail-9.webp
+  detail-*.webp: detail-1.webp, detail-15.webp, detail-17.webp, detail-18.webp, detail-19.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-5.webp, detail-6.webp, detail-7.webp, detail-8.webp, detail-9.webp
+Aura Stream:
+  cover.webp: YES
+  root *.webp: cover.webp, detail-1.webp, detail-2.webp
+  detail-*.webp: detail-1.webp, detail-2.webp
+Data Visualization:
+  cover.webp: YES
+  root *.webp: cover.webp, detail-1.webp, detail-10.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-6.webp, detail-7.webp, detail-8.webp
+  detail-*.webp: detail-1.webp, detail-10.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-6.webp, detail-7.webp, detail-8.webp
+Digital Agriculture Platform:
+  cover.webp: YES
+  root *.webp: cover.webp, detail-1.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-5.webp, detail-6.webp, detail-7.webp
+  detail-*.webp: detail-1.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-5.webp, detail-6.webp, detail-7.webp
+Intelligent Data Governance Platform:
+  cover.webp: YES
+  root *.webp: cover.webp, detail-1.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-6.webp
+  detail-*.webp: detail-1.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-6.webp
+Intelligent Defense System Design:
+  cover.webp: YES
+  root *.webp: cover.webp
+  detail-*.webp: none
+Qwen Cloud Ticket:
+  cover.webp: YES
+  root *.webp: cover.webp, detail-1.webp, detail-10.webp, detail-11.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-5.webp, detail-6.webp, detail-7.webp, detail-8.webp, detail-9.webp
+  detail-*.webp: detail-1.webp, detail-10.webp, detail-11.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-5.webp, detail-6.webp, detail-7.webp, detail-8.webp, detail-9.webp
+track-protect:
+  cover.webp: YES
+  root *.webp: cover.webp, detail-1.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-5.webp, detail-6.webp, detail-7.webp
+  detail-*.webp: detail-1.webp, detail-2.webp, detail-3.webp, detail-4.webp, detail-5.webp, detail-6.webp, detail-7.webp
+
+SUMMARY
+  Projects: 8; cover.webp present: 8/8
+  Basename pairs BOTH png+webp: 0; webp-only bases: 61; png-only bases: 0
+  webp vs png count: webp=61, png=16 (delta webp-png=45)

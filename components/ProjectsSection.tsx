@@ -44,11 +44,11 @@ const alibabaDetailBlocks = [
   },
   {
     type: "media" as const,
-    src: `${ALIBABA_DETAIL_BASE}/detail-1.png`,
+    src: `${ALIBABA_DETAIL_BASE}/detail-1.webp`,
   },
   {
     type: "media" as const,
-    src: `${ALIBABA_DETAIL_BASE}/detail-2.png`,
+    src: `${ALIBABA_DETAIL_BASE}/detail-2.webp`,
   },
   {
     type: "subheading" as const,
@@ -56,11 +56,11 @@ const alibabaDetailBlocks = [
   },
   {
     type: "media" as const,
-    src: `${ALIBABA_DETAIL_BASE}/detail-3.png`,
+    src: `${ALIBABA_DETAIL_BASE}/detail-3.webp`,
   },
   {
     type: "media" as const,
-    src: `${ALIBABA_DETAIL_BASE}/detail-4.png`,
+    src: `${ALIBABA_DETAIL_BASE}/detail-4.webp`,
   },
   {
     type: "subheading" as const,
@@ -68,7 +68,7 @@ const alibabaDetailBlocks = [
   },
   {
     type: "media" as const,
-    src: `${ALIBABA_DETAIL_BASE}/detail-5.png`,
+    src: `${ALIBABA_DETAIL_BASE}/detail-5.webp`,
   },
   {
     type: "heading" as const,
@@ -85,11 +85,11 @@ const alibabaDetailBlocks = [
   },
   {
     type: "media" as const,
-    src: `${ALIBABA_DETAIL_BASE}/detail-6.png`,
+    src: `${ALIBABA_DETAIL_BASE}/detail-6.webp`,
   },
   {
     type: "media" as const,
-    src: `${ALIBABA_DETAIL_BASE}/detail-7.png`,
+    src: `${ALIBABA_DETAIL_BASE}/detail-7.webp`,
   },
   {
     type: "subheading" as const,
@@ -97,7 +97,7 @@ const alibabaDetailBlocks = [
   },
   {
     type: "media" as const,
-    src: `${ALIBABA_DETAIL_BASE}/detail-8.png`,
+    src: `${ALIBABA_DETAIL_BASE}/detail-8.webp`,
   },
   {
     type: "subheading" as const,
@@ -105,7 +105,7 @@ const alibabaDetailBlocks = [
   },
   {
     type: "media" as const,
-    src: `${ALIBABA_DETAIL_BASE}/detail-9.png`,
+    src: `${ALIBABA_DETAIL_BASE}/detail-9.webp`,
   },
   {
     type: "media" as const,
@@ -128,7 +128,7 @@ const alibabaDetailBlocks = [
   },
   {
     type: "media" as const,
-    src: `${ALIBABA_DETAIL_BASE}/detail-15.png`,
+    src: `${ALIBABA_DETAIL_BASE}/detail-15.webp`,
   },
   {
     type: "media" as const,
@@ -144,15 +144,15 @@ const alibabaDetailBlocks = [
   },
   {
     type: "media" as const,
-    src: `${ALIBABA_DETAIL_BASE}/detail-17.png`,
+    src: `${ALIBABA_DETAIL_BASE}/detail-17.webp`,
   },
   {
     type: "media" as const,
-    src: `${ALIBABA_DETAIL_BASE}/detail-18.png`,
+    src: `${ALIBABA_DETAIL_BASE}/detail-18.webp`,
   },
   {
     type: "media" as const,
-    src: `${ALIBABA_DETAIL_BASE}/detail-19.png`,
+    src: `${ALIBABA_DETAIL_BASE}/detail-19.webp`,
   },
 ] as const;
 
@@ -313,11 +313,11 @@ const auraDetailBlocks = [
   },
   {
     type: "media" as const,
-    src: `${AURA_DETAIL_BASE}/detail-1.png`,
+    src: `${AURA_DETAIL_BASE}/detail-1.webp`,
   },
   {
     type: "media" as const,
-    src: `${AURA_DETAIL_BASE}/detail-2.png`,
+    src: `${AURA_DETAIL_BASE}/detail-2.webp`,
   },
   {
     type: "media" as const,
@@ -334,11 +334,11 @@ const DATA_VIZ_DETAIL_BASE = "/projects/Data%20Visualization";
 const dataVizDetailBlocks = [
   {
     type: "media" as const,
-    src: `${DATA_VIZ_DETAIL_BASE}/detail-1.jpg`,
+    src: `${DATA_VIZ_DETAIL_BASE}/detail-1.webp`,
   },
   {
     type: "media" as const,
-    src: `${DATA_VIZ_DETAIL_BASE}/detail-2.jpg`,
+    src: `${DATA_VIZ_DETAIL_BASE}/detail-2.webp`,
   },
   {
     type: "body" as const,
@@ -346,11 +346,11 @@ const dataVizDetailBlocks = [
   },
   {
     type: "media" as const,
-    src: `${DATA_VIZ_DETAIL_BASE}/detail-3.jpg`,
+    src: `${DATA_VIZ_DETAIL_BASE}/detail-3.webp`,
   },
   {
     type: "media" as const,
-    src: `${DATA_VIZ_DETAIL_BASE}/detail-4.jpg`,
+    src: `${DATA_VIZ_DETAIL_BASE}/detail-4.webp`,
   },
   {
     type: "body" as const,
@@ -362,7 +362,7 @@ const dataVizDetailBlocks = [
   },
   {
     type: "media" as const,
-    src: `${DATA_VIZ_DETAIL_BASE}/detail-6.jpg`,
+    src: `${DATA_VIZ_DETAIL_BASE}/detail-6.webp`,
   },
   {
     type: "body" as const,
@@ -370,11 +370,11 @@ const dataVizDetailBlocks = [
   },
   {
     type: "media" as const,
-    src: `${DATA_VIZ_DETAIL_BASE}/detail-7.jpg`,
+    src: `${DATA_VIZ_DETAIL_BASE}/detail-7.webp`,
   },
   {
     type: "media" as const,
-    src: `${DATA_VIZ_DETAIL_BASE}/detail-8.jpg`,
+    src: `${DATA_VIZ_DETAIL_BASE}/detail-8.webp`,
   },
   {
     type: "body" as const,
@@ -386,7 +386,7 @@ const dataVizDetailBlocks = [
   },
   {
     type: "media" as const,
-    src: `${DATA_VIZ_DETAIL_BASE}/detail-10.jpg`,
+    src: `${DATA_VIZ_DETAIL_BASE}/detail-10.webp`,
   },
   {
     type: "media" as const,
@@ -402,15 +402,15 @@ const projects = [
     designDate: "2023",
     description:
       "SafePin，是一款主打家庭定位与安全守护的应用。它的核心目标是帮助家人实时了解海外子女的行踪，当出现异常情况时，系统能第一时间发出预警。\n\n在这个项目里，我主要负责从整体信息架构到UI视觉体系的设计。前期我调研了不同用户角色——家长和子女——在安全场景下的需求差异，然后设计了多角色入口和权限控制逻辑，确保体验上既安全又有亲和力。\n\n视觉上我希望它能传递‘守护感’而不是‘监控感’，logo外层提取了导航箭头的视觉符号，代表定位和方向感，内部融入心形元素，表达家人之间的关心与陪伴。整体通过圆润的造型和紫色渐变，让产品从‘监控工具’转变为‘家庭守护伙伴’。整体风格简洁、有层次感，也兼顾品牌识别度。\n\n在此期间锻炼了复杂逻辑场景的交互梳理能力，也提升了视觉体系的构建和延展能力。现在更擅长在安全、定位、监控等严肃主题中，通过设计语言去平衡理性与情感的表达。",
-    thumbImage: "/projects/track-protect/cover.png",
+    thumbImage: "/projects/track-protect/cover.webp",
     detailImages: [
-      "/projects/track-protect/detail-1.png",
-      "/projects/track-protect/detail-2.png",
-      "/projects/track-protect/detail-3.png",
-      "/projects/track-protect/detail-4.png",
-      "/projects/track-protect/detail-5.png",
-      "/projects/track-protect/detail-6.png",
-      "/projects/track-protect/detail-7.png",
+      "/projects/track-protect/detail-1.webp",
+      "/projects/track-protect/detail-2.webp",
+      "/projects/track-protect/detail-3.webp",
+      "/projects/track-protect/detail-4.webp",
+      "/projects/track-protect/detail-5.webp",
+      "/projects/track-protect/detail-6.webp",
+      "/projects/track-protect/detail-7.webp",
     ],
   },
   {
@@ -421,14 +421,14 @@ const projects = [
     description:
       "面向企业数据管理场景的数据治理平台，通过整合数据资产管理、质量监控、标签体系、模型能力与治理流程，帮助企业实现数据统一管理与价值挖掘。平台以空间化工作台为核心，为用户提供清晰、高效的数据治理协作体验。\n\n我负责平台整体信息架构梳理、核心页面设计与交互体验优化。通过重新规划功能模块与数据层级关系，将复杂的数据治理流程转化为直观、易理解的操作路径；同时结合可视化设计提升数据状态呈现效率，帮助用户快速发现问题、管理资产并推动数据价值转化。",
     thumbImage:
-      "/projects/Intelligent%20Data%20Governance%20Platform/cover.png",
+      "/projects/Intelligent%20Data%20Governance%20Platform/cover.webp",
     detailImages: [
-      "/projects/Intelligent%20Data%20Governance%20Platform/detail-1.png",
-      "/projects/Intelligent%20Data%20Governance%20Platform/detail-2.png",
-      "/projects/Intelligent%20Data%20Governance%20Platform/detail-3.png",
-      "/projects/Intelligent%20Data%20Governance%20Platform/detail-4.png",
+      "/projects/Intelligent%20Data%20Governance%20Platform/detail-1.webp",
+      "/projects/Intelligent%20Data%20Governance%20Platform/detail-2.webp",
+      "/projects/Intelligent%20Data%20Governance%20Platform/detail-3.webp",
+      "/projects/Intelligent%20Data%20Governance%20Platform/detail-4.webp",
       "/projects/Intelligent%20Data%20Governance%20Platform/detail-5.mp4",
-      "/projects/Intelligent%20Data%20Governance%20Platform/detail-6.png",
+      "/projects/Intelligent%20Data%20Governance%20Platform/detail-6.webp",
     ],
     detailSeamless: true,
   },
@@ -440,19 +440,19 @@ const projects = [
     description:
       "作为千问云（QWENCLOUD）海外版控制台体验升级的一部分，主要负责了工单服务模块（Ticket Support System）页面的交互与视觉设计。该项目旨在解决海外 AI 开发者在模型部署、API 调优及计费中遇到技术难题时流程冗长、描述不准及沟通成本高等痛点，通过打造低门槛发起、IM 模式高效沟通与全状态可视化的服务闭环，显著提升了海外用户的技术支持服务体验。",
     descriptionLink: "https://www.qwencloud.com/",
-    thumbImage: "/projects/Qwen%20Cloud%20Ticket/cover.png",
+    thumbImage: "/projects/Qwen%20Cloud%20Ticket/cover.webp",
     detailImages: [
-      "/projects/Qwen%20Cloud%20Ticket/detail-1.png",
-      "/projects/Qwen%20Cloud%20Ticket/detail-2.png",
-      "/projects/Qwen%20Cloud%20Ticket/detail-3.png",
-      "/projects/Qwen%20Cloud%20Ticket/detail-4.png",
-      "/projects/Qwen%20Cloud%20Ticket/detail-5.png",
-      "/projects/Qwen%20Cloud%20Ticket/detail-6.png",
-      "/projects/Qwen%20Cloud%20Ticket/detail-7.png",
-      "/projects/Qwen%20Cloud%20Ticket/detail-8.png",
-      "/projects/Qwen%20Cloud%20Ticket/detail-9.png",
-      "/projects/Qwen%20Cloud%20Ticket/detail-10.png",
-      "/projects/Qwen%20Cloud%20Ticket/detail-11.png",
+      "/projects/Qwen%20Cloud%20Ticket/detail-1.webp",
+      "/projects/Qwen%20Cloud%20Ticket/detail-2.webp",
+      "/projects/Qwen%20Cloud%20Ticket/detail-3.webp",
+      "/projects/Qwen%20Cloud%20Ticket/detail-4.webp",
+      "/projects/Qwen%20Cloud%20Ticket/detail-5.webp",
+      "/projects/Qwen%20Cloud%20Ticket/detail-6.webp",
+      "/projects/Qwen%20Cloud%20Ticket/detail-7.webp",
+      "/projects/Qwen%20Cloud%20Ticket/detail-8.webp",
+      "/projects/Qwen%20Cloud%20Ticket/detail-9.webp",
+      "/projects/Qwen%20Cloud%20Ticket/detail-10.webp",
+      "/projects/Qwen%20Cloud%20Ticket/detail-11.webp",
     ],
   },
   {
@@ -464,27 +464,27 @@ const projects = [
       "参与阿里云官网外包设计项目，负责官网页面的视觉升级与体验优化。围绕云计算产品的品牌表达与用户浏览体验，对页面视觉风格、UI 组件体系、动态交互效果及插画创意进行全面优化，提升官网整体的科技感、品牌一致性与信息传达效率。",
     descriptionLink: "https://www.aliyun.com/",
     thumbImage:
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/cover.png",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/cover.webp",
     detailImages: [
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-1.png",
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-2.png",
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-3.png",
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-4.png",
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-5.png",
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-6.png",
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-7.png",
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-8.png",
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-9.png",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-1.webp",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-2.webp",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-3.webp",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-4.webp",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-5.webp",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-6.webp",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-7.webp",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-8.webp",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-9.webp",
       "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-11.mp4",
       [
         "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-13.mp4",
         "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-14.mp4",
       ],
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-15.png",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-15.webp",
       "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-16.mp4",
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-17.png",
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-18.png",
-      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-19.png",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-17.webp",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-18.webp",
+      "/projects/Alibaba%20Cloud%20Official%20Site%20Design/detail-19.webp",
     ],
     detailBlocks: alibabaDetailBlocks,
   },
@@ -495,18 +495,18 @@ const projects = [
     designDate: "2025",
     description:
       "作为一名专注UI/UX与视觉交互的设计师，我擅长将复杂、高密度的业务数据转化为具象、直观且具备沉浸感的大屏视觉语言。\n\n在 B 端及指挥决策大屏设计领域，我始终秉持“视觉服务于业务”的设计理念。不仅追求科技感与视觉张力的极致呈现，更注重数据层级的清晰梳理、空间布局的合理调度以及核心指标的快速调取。从装备智能运维、低空全域感知到复杂的警务数据实战平台，我深度参与了多个核心大屏项目的全流程视觉构建、3D 场景资产联动与系统交互设计，致力于用精细化的设计赋能指挥决策，让“数据看得到，重点看得清，决策更高效”。",
-    thumbImage: "/projects/Data%20Visualization/cover.jpg",
+    thumbImage: "/projects/Data%20Visualization/cover.webp",
     detailImages: [
-      "/projects/Data%20Visualization/detail-1.jpg",
-      "/projects/Data%20Visualization/detail-2.jpg",
-      "/projects/Data%20Visualization/detail-3.jpg",
-      "/projects/Data%20Visualization/detail-4.jpg",
+      "/projects/Data%20Visualization/detail-1.webp",
+      "/projects/Data%20Visualization/detail-2.webp",
+      "/projects/Data%20Visualization/detail-3.webp",
+      "/projects/Data%20Visualization/detail-4.webp",
       "/projects/Data%20Visualization/detail-5.mp4",
-      "/projects/Data%20Visualization/detail-6.jpg",
-      "/projects/Data%20Visualization/detail-7.jpg",
-      "/projects/Data%20Visualization/detail-8.jpg",
+      "/projects/Data%20Visualization/detail-6.webp",
+      "/projects/Data%20Visualization/detail-7.webp",
+      "/projects/Data%20Visualization/detail-8.webp",
       "/projects/Data%20Visualization/detail-9.mp4",
-      "/projects/Data%20Visualization/detail-10.jpg",
+      "/projects/Data%20Visualization/detail-10.webp",
       "/projects/Data%20Visualization/detail-11.mp4",
     ],
     detailBlocks: dataVizDetailBlocks,
@@ -518,14 +518,14 @@ const projects = [
     designDate: "2023",
     description:
       "数字三农是一套面向农业产业链的数字化管理平台，旨在通过数据驱动提升农业生产与运营效率。设计围绕多角色、多业务场景展开，将复杂的农业数据进行结构化呈现，打造直观、高效的可视化管理体验，助力农业数字化转型与智慧农业发展。",
-    thumbImage: "/projects/Digital%20Agriculture%20Platform/cover.png",
+    thumbImage: "/projects/Digital%20Agriculture%20Platform/cover.webp",
     detailImages: [
-      "/projects/Digital%20Agriculture%20Platform/detail-1.png",
-      "/projects/Digital%20Agriculture%20Platform/detail-2.png",
-      "/projects/Digital%20Agriculture%20Platform/detail-4.png",
-      "/projects/Digital%20Agriculture%20Platform/detail-5.png",
-      "/projects/Digital%20Agriculture%20Platform/detail-6.png",
-      "/projects/Digital%20Agriculture%20Platform/detail-7.png",
+      "/projects/Digital%20Agriculture%20Platform/detail-1.webp",
+      "/projects/Digital%20Agriculture%20Platform/detail-2.webp",
+      "/projects/Digital%20Agriculture%20Platform/detail-4.webp",
+      "/projects/Digital%20Agriculture%20Platform/detail-5.webp",
+      "/projects/Digital%20Agriculture%20Platform/detail-6.webp",
+      "/projects/Digital%20Agriculture%20Platform/detail-7.webp",
     ],
   },
   {
@@ -536,7 +536,7 @@ const projects = [
     description:
       "深度参与多个军工领域数字化系统设计，探索复杂数据环境下的信息呈现与智能决策体验，积累了面向高复杂度 B 端产品的系统设计与可视化设计经验。",
     thumbImage:
-      "/projects/Intelligent%20Defense%20System%20Design/cover.png",
+      "/projects/Intelligent%20Defense%20System%20Design/cover.webp",
     detailImages: [
       "/projects/Intelligent%20Defense%20System%20Design/detail-1.mp4",
       "/projects/Intelligent%20Defense%20System%20Design/detail-2.mp4",
@@ -557,10 +557,10 @@ const projects = [
     designDate: "2026",
     description:
       "对AI Coding比较感兴趣，但是没有编程背景，我尝试通过 Vibe Coding 完成一次完整的 Design-to-Code 探索。\n\n在这个过程中，我没有直接编写代码，而是将自己的设计思考、视觉规范和交互体验转化为自然语言，与 AI 进行协作。AI 负责实现技术逻辑，而我更多关注产品体验、视觉质量以及最终呈现效果，通过不断观察、反馈和调整，让设计从 Figma 里的静态界面真正变成可交互的产品。",
-    thumbImage: "/projects/Aura%20Stream/cover.png",
+    thumbImage: "/projects/Aura%20Stream/cover.webp",
     detailImages: [
-      "/projects/Aura%20Stream/detail-1.png",
-      "/projects/Aura%20Stream/detail-2.png",
+      "/projects/Aura%20Stream/detail-1.webp",
+      "/projects/Aura%20Stream/detail-2.webp",
       "/projects/Aura%20Stream/detail-3.mp4",
       "/projects/Aura%20Stream/detail-4.mp4",
     ],
