@@ -26,6 +26,31 @@ const projectTitlePhrases = [
   "Products",
 ] as const;
 
+/** Figma 348:2518 + 348:2567 — Caveat label + loopy arrow above the title */
+function ProjectsExploreDoodle({ className = "" }: { className?: string }) {
+  return (
+    <div
+      className={`pointer-events-none absolute z-10 ${className}`}
+      aria-hidden
+    >
+      <p
+        className="font-caveat relative z-[1] origin-left whitespace-nowrap text-[32px] font-normal leading-6 text-black"
+        style={{ transform: "rotate(13.84deg)" }}
+      >
+        explore my work!
+      </p>
+      <Image
+        src="/projects/arrow.svg"
+        alt=""
+        width={85}
+        height={52}
+        unoptimized
+        className="absolute -left-8 top-[2.85rem] h-[52px] w-[85px]"
+      />
+    </div>
+  );
+}
+
 const ALIBABA_DETAIL_BASE =
   "/projects/Alibaba%20Cloud%20Official%20Site%20Design";
 
@@ -1662,19 +1687,23 @@ export default function ProjectsSection({
       <div className="mx-auto w-full max-w-6xl">
         <ScrollReveal>
           <div className="flex w-full max-w-[904px] flex-col items-start gap-8 sm:gap-10">
-            <h2
-              data-nav-focus
-              className="font-inter text-[clamp(2.5rem,6vw,4rem)] font-semibold leading-[1.15] tracking-tight text-black"
-            >
-              <Typewriter
-                texts={projectTitlePhrases}
-                active={inView}
-                typeSpeed={0.05}
-                holdTime={1.1}
-                deleteSpeed={0.07}
-                cursorChar="_"
-              />
-            </h2>
+            <div className="relative w-full">
+              {/* Figma 288:2531 — handwritten cue above Selected Works */}
+              <ProjectsExploreDoodle className="bottom-[calc(100%+5rem)] left-[min(108%,38rem)] hidden sm:block" />
+              <h2
+                data-nav-focus
+                className="font-inter text-[clamp(2.5rem,6vw,4rem)] font-semibold leading-[1.15] tracking-tight text-black"
+              >
+                <Typewriter
+                  texts={projectTitlePhrases}
+                  active={inView}
+                  typeSpeed={0.05}
+                  holdTime={1.1}
+                  deleteSpeed={0.07}
+                  cursorChar="_"
+                />
+              </h2>
+            </div>
             <p className="font-inter text-[28px] font-normal leading-normal text-[#1D2129]">
               “A collection of digital products, AI experiences,
               <br />
@@ -1714,8 +1743,8 @@ export default function ProjectsSection({
               </ScrollRevealItem>
             ))}
           </ScrollRevealGroup>
-        </div>
-      </div>
+                </div>
+              </div>
 
       {cursorMounted
         ? createPortal(
@@ -1750,19 +1779,19 @@ export default function ProjectsSection({
           )
         : null}
 
-      {selectedProject && (
+        {selectedProject && (
         <div
           className="fixed inset-0 z-50 cursor-auto bg-[#1a1a1a]"
           onClick={closeProject}
         >
-          <button
-            type="button"
-            aria-label="Close project details"
+            <button
+              type="button"
+              aria-label="Close project details"
             onClick={closeProject}
-            className="fixed right-5 top-5 z-[60] flex h-10 w-10 items-center justify-center text-white/80 transition hover:text-white sm:right-8 sm:top-6"
-          >
-            <X className="h-7 w-7" strokeWidth={1.5} />
-          </button>
+              className="fixed right-5 top-5 z-[60] flex h-10 w-10 items-center justify-center text-white/80 transition hover:text-white sm:right-8 sm:top-6"
+            >
+              <X className="h-7 w-7" strokeWidth={1.5} />
+            </button>
 
           {detailLoading ? (
             <DetailModalSkeleton />
@@ -1779,13 +1808,13 @@ export default function ProjectsSection({
               <div className="relative mx-auto w-full max-w-[1440px] bg-[#1a1a1a]">
                 <header className="px-8 py-8 sm:px-10 sm:py-10">
                   <div className="flex items-start justify-between gap-6">
-                    <h3 className="font-inter max-w-[70%] text-xl font-semibold tracking-tight text-white sm:text-2xl md:text-[28px]">
+                  <h3 className="font-inter max-w-[70%] text-xl font-semibold tracking-tight text-white sm:text-2xl md:text-[28px]">
                       {"detailTitle" in selectedProject &&
                       selectedProject.detailTitle
                         ? selectedProject.detailTitle
                         : selectedProject.title}
-                    </h3>
-                    <p className="font-inter shrink-0 pt-1 text-right text-sm font-normal text-white/80 sm:text-base">
+                  </h3>
+                  <p className="font-inter shrink-0 pt-1 text-right text-sm font-normal text-white/80 sm:text-base">
                       <span>{selectedProject.designDate}</span>
                       <span className="mx-3 text-white/35">·</span>
                       <span>{selectedProject.tag}</span>
@@ -1895,8 +1924,8 @@ export default function ProjectsSection({
                           priority={index === 0}
                           onZoomImage={openDetailLightbox}
                         />
-                      ))}
-                </div>
+                  ))}
+            </div>
               </div>
             </div>
           )}

@@ -29,6 +29,10 @@ body {
   font-family: var(--font-inter), "Inter", system-ui, sans-serif;
 }
 
+.font-caveat {
+  font-family: var(--font-caveat), "Caveat", cursive;
+}
+
 /* Skeleton shimmer — soft light sweep (stronger than opacity-only pulse) */
 @keyframes skeleton-shimmer {
   0% {

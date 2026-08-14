@@ -20,6 +20,7 @@ import { ArrowDown } from "lucide-react";
 import AboutSection from "@/components/AboutSection";
 import CapabilitiesSection from "@/components/CapabilitiesSection";
 import ContactSection from "@/components/ContactSection";
+import HeroAvatarCard from "@/components/HeroAvatarCard";
 import ProjectsSection from "@/components/ProjectsSection";
 import ScrollReveal from "@/components/ScrollReveal";
 import SiteNav, { scrollToNavTarget } from "@/components/SiteNav";
@@ -95,56 +96,12 @@ const clientAvatars = [
 ] as const;
 
 const marqueeText = "CICEL BRONX";
-const circleLeftText = "SCROLL DOWN";
-const circleRightText = "AND KNOW ME BETTER";
-/** Outer ring stays fixed; inner ring pulled in; text sits mid-gap. */
-const CIRCLE_INNER_R = 46;
-const CIRCLE_OUTER_R = 86;
-const CIRCLE_TEXT_R = (CIRCLE_INNER_R + CIRCLE_OUTER_R) / 2;
-const CIRCLE_FONT_SIZE = 14.5;
-
-/** Point on the text ring: offset 0 at 12 o'clock, clockwise. */
-function pointOnScrollCircle(offset: number, radius = CIRCLE_TEXT_R) {
-  const theta = offset * Math.PI * 2;
-  return {
-    x: 100 + radius * Math.sin(theta),
-    y: 100 - radius * Math.cos(theta),
-  };
-}
-
-/** Star offsets in the open gaps between the two unequal arc phrases. */
-function getCircleStarOffsets() {
-  const circumference = 2 * Math.PI * CIRCLE_TEXT_R;
-  const charWidth = CIRCLE_FONT_SIZE * 0.62;
-  const rightHalf =
-    (circleRightText.length * charWidth) / circumference / 2;
-  const leftHalf = (circleLeftText.length * charWidth) / circumference / 2;
-
-  const rightCenter = 0.25;
-  const leftCenter = 0.75;
-  const rightEnd = rightCenter + rightHalf;
-  const leftStart = leftCenter - leftHalf;
-  const leftEnd = leftCenter + leftHalf;
-  const rightStart = rightCenter - rightHalf;
-
-  return {
-    // Between right phrase → left phrase (lower arc)
-    afterRight: (rightEnd + leftStart) / 2,
-    // Between left phrase → right phrase (upper arc, wraps past 12 o'clock)
-    afterLeft: ((leftEnd + rightStart + 1) / 2) % 1,
-  };
-}
-
-const circleStarOffsets = getCircleStarOffsets();
-const circleStarA = pointOnScrollCircle(circleStarOffsets.afterLeft);
-const circleStarB = pointOnScrollCircle(circleStarOffsets.afterRight);
 
 export default function Home() {
   type NavLabel = (typeof navItems)[number]["label"];
   const [activeItem, setActiveItem] = useState<NavLabel>("Home");
   const [lockedNav, setLockedNav] = useState<NavLabel | null>(null);
   const [roleIndex, setRoleIndex] = useState(0);
-  const [isCardHovered, setIsCardHovered] = useState(false);
   const [aboutInView, setAboutInView] = useState(false);
   const [capabilitiesInView, setCapabilitiesInView] = useState(false);
   const [projectsInView, setProjectsInView] = useState(false);
@@ -448,151 +405,7 @@ export default function Home() {
                 style={{ y: avatarY }}
                 className="relative z-10 flex w-full items-center justify-center will-change-transform transform-gpu"
               >
-                <div
-                  ref={avatarCardRef}
-                  className="relative z-10 h-[300px] w-[300px] cursor-pointer [perspective:1200px]"
-                  onMouseEnter={() => setIsCardHovered(true)}
-                  onMouseLeave={() => setIsCardHovered(false)}
-                >
-                <motion.div
-                  className="absolute inset-0 overflow-hidden rounded-[40px] bg-[#5b7cff] shadow-[0_22px_50px_rgba(0,0,0,0.18)] [backface-visibility:hidden]"
-                  animate={{ rotateY: isCardHovered ? 180 : 0 }}
-                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                  style={{
-                    borderRadius: 40,
-                    transformStyle: "preserve-3d",
-                  }}
-                >
-                  <Image
-                    src="/avatar-hero.jpg"
-                    alt="Cicel avatar"
-                    fill
-                    priority
-                    unoptimized
-                    sizes="300px"
-                    className="object-cover"
-                  />
-                </motion.div>
-
-                <motion.div
-                  className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-[40px] border border-white/70 bg-white/70 shadow-[0_22px_50px_rgba(0,0,0,0.12)] backdrop-blur-[20px] [-webkit-backdrop-filter:blur(20px)] [backface-visibility:hidden]"
-                  initial={false}
-                  animate={{ rotateY: isCardHovered ? 0 : -180 }}
-                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                  style={{
-                    borderRadius: 40,
-                    backfaceVisibility: "hidden",
-                    transformStyle: "preserve-3d",
-                  }}
-                >
-                  <motion.div
-                    className="absolute inset-[14%]"
-                    animate={{ rotate: isCardHovered ? 360 : 0 }}
-                    transition={{
-                      repeat: isCardHovered ? Infinity : 0,
-                      ease: "linear",
-                      duration: 12,
-                    }}
-                  >
-                    <svg
-                      viewBox="0 0 200 200"
-                      className="h-full w-full"
-                      aria-hidden
-                    >
-                      <defs>
-                        {/* Starts at 12 o'clock, clockwise — mid track between rings */}
-                        <path
-                          id="scroll-circle"
-                          d={`M 100,${100 - CIRCLE_TEXT_R} A ${CIRCLE_TEXT_R},${CIRCLE_TEXT_R} 0 1,1 ${99.999},${100 - CIRCLE_TEXT_R}`}
-                        />
-                      </defs>
-                      <circle
-                        cx="100"
-                        cy="100"
-                        r={CIRCLE_INNER_R}
-                        fill="none"
-                        stroke="rgba(0,0,0,0.80)"
-                        strokeWidth="0.75"
-                      />
-                      <circle
-                        cx="100"
-                        cy="100"
-                        r={CIRCLE_OUTER_R}
-                        fill="none"
-                        stroke="rgba(0,0,0,0.80)"
-                        strokeWidth="0.75"
-                      />
-
-                      {/* Right arc phrase */}
-                      <text
-                        className="fill-black font-inter uppercase"
-                        dominantBaseline="middle"
-                        style={{
-                          fontSize: `${CIRCLE_FONT_SIZE}px`,
-                          fontWeight: 600,
-                        }}
-                      >
-                        <textPath
-                          href="#scroll-circle"
-                          startOffset="25%"
-                          textAnchor="middle"
-                        >
-                          {circleRightText}
-                        </textPath>
-                      </text>
-
-                      {/* Left arc phrase */}
-                      <text
-                        className="fill-black font-inter uppercase"
-                        dominantBaseline="middle"
-                        style={{
-                          fontSize: `${CIRCLE_FONT_SIZE}px`,
-                          fontWeight: 600,
-                        }}
-                      >
-                        <textPath
-                          href="#scroll-circle"
-                          startOffset="75%"
-                          textAnchor="middle"
-                        >
-                          {circleLeftText}
-                        </textPath>
-                      </text>
-
-                      {/* Stars sit in the open gaps between the two phrases */}
-                      <g fill="#111111">
-                        <path
-                          transform={`translate(${circleStarA.x} ${circleStarA.y}) scale(0.9)`}
-                          d="M0-5.6 L1.4-1.4 L5.6 0 L1.4 1.4 L0 5.6 L-1.4 1.4 L-5.6 0 L-1.4-1.4 Z"
-                        />
-                        <path
-                          transform={`translate(${circleStarB.x} ${circleStarB.y}) scale(0.9)`}
-                          d="M0-5.6 L1.4-1.4 L5.6 0 L1.4 1.4 L0 5.6 L-1.4 1.4 L-5.6 0 L-1.4-1.4 Z"
-                        />
-                      </g>
-                    </svg>
-                  </motion.div>
-
-                  <motion.div
-                    className="relative z-10"
-                    animate={isCardHovered ? { y: [-4, 5, -4] } : { y: 0 }}
-                    transition={
-                      isCardHovered
-                        ? {
-                            duration: 1.15,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                          }
-                        : { duration: 0.2 }
-                    }
-                  >
-                    <ArrowDown
-                      className="h-11 w-11 text-black sm:h-12 sm:w-12"
-                      strokeWidth={1.15}
-                    />
-                  </motion.div>
-                </motion.div>
-              </div>
+                <HeroAvatarCard ref={avatarCardRef} heroRef={heroRef} />
               </motion.div>
             </div>
           </ScrollReveal>
@@ -625,6 +438,7 @@ export default function Home() {
             <ScrollReveal delay={0.24}>
               <motion.a
                 href="#contact"
+                data-pause-avatar-follow
                 onClick={(event) => {
                   event.preventDefault();
                   scrollToNavTarget("#contact");

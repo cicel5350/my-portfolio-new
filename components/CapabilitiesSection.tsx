@@ -10,6 +10,8 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ScrollReveal from "@/components/ScrollReveal";
+import AboutMeDoodle from "@/components/AboutMeDoodle";
+import CapabilitiesFlowerEyes from "@/components/CapabilitiesFlowerEyes";
 
 const folders = [
   {
@@ -460,17 +462,31 @@ export default function CapabilitiesSection({
     <section
       id="capabilities"
       ref={ref}
-      className="relative scroll-mt-28 overflow-x-clip bg-white px-4 sm:px-6 lg:px-8"
+      className="relative flex min-h-dvh scroll-mt-0 items-center justify-center overflow-x-clip bg-white px-4 py-24 sm:overflow-visible sm:px-6 lg:px-8"
     >
-      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-12">
-        <ScrollReveal className="flex w-full flex-col items-center gap-12">
-          <h2
-            data-nav-focus
-            className="font-inter max-w-[794px] text-center text-[clamp(1.375rem,3.2vw,2.25rem)] font-normal leading-normal tracking-tight text-black"
-          >
-            “I design intelligent digital experiences that bridge creativity,
-            technology, and human-centered thinking.”
-          </h2>
+      <div
+        data-nav-focus
+        className="mx-auto flex w-full max-w-5xl flex-col items-center gap-12 overflow-visible"
+      >
+        <ScrollReveal className="flex w-full flex-col items-center gap-12 overflow-visible">
+          <div className="flex w-full flex-col items-center gap-10 overflow-visible">
+            {/* Figma 341:2482 — handwritten title above the quote */}
+            <AboutMeDoodle text="my capabilities" />
+
+            {/*
+              Quote + flower (Figma 286:2459 / 354:2496):
+              flower top ≈ -30px, right overhang ≈ 52px from the 794px quote box.
+            */}
+            <div className="relative w-full max-w-[794px] overflow-visible">
+              <h2 className="font-inter text-center text-[clamp(1.375rem,3.2vw,2.25rem)] font-normal leading-normal tracking-tight text-black">
+                “I design intelligent digital experiences that bridge creativity,
+                technology, and human-centered thinking.”
+              </h2>
+              <div className="pointer-events-none absolute right-[-52px] top-[-30px] z-20 max-sm:right-0 max-sm:top-0 max-sm:translate-x-[8%] max-sm:-translate-y-[45%]">
+                <CapabilitiesFlowerEyes />
+              </div>
+            </div>
+          </div>
           <div
             aria-hidden
             className="h-20 w-px shrink-0 bg-black"

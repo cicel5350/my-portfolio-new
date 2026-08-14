@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import {
+  Caveat,
   Geist,
   Geist_Mono,
   Inter,
@@ -37,6 +38,12 @@ const robotoMono = Roboto_Mono({
   weight: ["400", "500", "600", "700"],
 });
 
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Cicel — UI/UX Designer",
   description: "Portfolio of Cicel, UI/UX Designer",
@@ -50,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${playfair.variable} ${robotoMono.variable} antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${playfair.variable} ${robotoMono.variable} ${caveat.variable} antialiased`}
     >
       <body className="flex min-h-dvh flex-col font-sans">
         <SmoothScroll>{children}</SmoothScroll>

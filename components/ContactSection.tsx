@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   useEffect,
   useRef,
@@ -27,14 +28,65 @@ const contactDetails = [
     label: "Email",
     value: "cenchen684@gmail.com",
     cursorLabel: "Email Me",
+    showAvailabilityDoodle: false,
   },
   {
     href: "tel:18792709467",
     label: "Call Me",
     value: "18792709467",
     cursorLabel: "Call Me",
+    showAvailabilityDoodle: true,
   },
 ] as const;
+
+/** Figma 346:2497 — yellow speech chip with avatar + CTA label */
+function GetInTouchBubble({ className = "" }: { className?: string }) {
+  return (
+    <div
+      className={`pointer-events-none inline-flex items-center gap-2.5 bg-[#F9DE8C] py-2.5 pl-2.5 pr-4 tracking-normal ${className}`}
+      style={{ borderRadius: "32px 32px 32px 0" }}
+      aria-hidden
+    >
+      <span className="relative size-10 shrink-0 overflow-hidden rounded-full bg-white">
+        <Image
+          src="/contact/avatar1.png"
+          alt=""
+          fill
+          sizes="40px"
+          className="object-cover object-[center_20%]"
+        />
+      </span>
+      <span className="font-inter whitespace-nowrap text-[18px] font-normal leading-none tracking-normal text-[#0B0C0F]">
+        Get in touch！
+      </span>
+    </div>
+  );
+}
+
+/** Figma 346:2515 + 346:2509 — curved arrow + Caveat note beside Call Me */
+function AvailabilityDoodle({ className = "" }: { className?: string }) {
+  return (
+    <div
+      className={`pointer-events-none absolute left-[calc(100%-5.5rem)] top-[2.65rem] z-10 hidden w-[10.5rem] lg:block ${className}`}
+      aria-hidden
+    >
+      <Image
+        src="/contact/arrow.svg"
+        alt=""
+        width={35}
+        height={28}
+        unoptimized
+        className="block h-7 w-9"
+      />
+      <p
+        className="font-caveat -mt-0.5 w-[9.5rem] text-[24px] font-normal leading-6 text-[#0B0C0F]"
+        style={{ transform: "rotate(-5deg)" }}
+      >
+        I&apos;m available for new projects
+      </p>
+    </div>
+  );
+}
 
 function RollingHeadlineWord({
   words,
@@ -256,11 +308,15 @@ export default function ContactSection({
           <ScrollReveal>
             <h2
               data-nav-focus
-              className="font-inter text-[clamp(2.75rem,8vw,5.9375rem)] font-semibold leading-[1.05] tracking-tight"
+              className="font-inter relative text-[clamp(2.75rem,8vw,5.9375rem)] font-semibold leading-[1.05] tracking-tight"
             >
               <span className="flex flex-wrap items-baseline gap-x-[0.1em] text-[#0B0C0F]">
                 <span>Lets</span>
-                <RollingHeadlineWord words={rollingWords} active={inView} />
+                <span className="relative inline-flex">
+                  {/* Figma 346:2497 — top-right of the rolling verb */}
+                  <GetInTouchBubble className="absolute bottom-[calc(100%+0.08em)] left-[92%] z-10" />
+                  <RollingHeadlineWord words={rollingWords} active={inView} />
+                </span>
               </span>
               <span className="block text-[#9FA7B7]">
                 incredible work together.
@@ -276,7 +332,7 @@ export default function ContactSection({
             {contactDetails.map((item) => (
               <ScrollRevealItem
                 key={item.href}
-                className="w-full min-w-0 sm:max-w-[281px]"
+                className="relative w-full min-w-0 sm:max-w-[281px]"
               >
                 <p className="font-inter text-[20px] font-normal leading-none text-[#535B6B]">
                   {item.label}
@@ -292,6 +348,7 @@ export default function ContactSection({
                 >
                   {item.value}
                 </a>
+                {item.showAvailabilityDoodle ? <AvailabilityDoodle /> : null}
               </ScrollRevealItem>
             ))}
 

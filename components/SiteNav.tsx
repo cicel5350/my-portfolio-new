@@ -40,8 +40,8 @@ export function scrollToNavTarget(href: string, behavior: ScrollBehavior = "smoo
 
   const navH = getStickyNavHeight();
 
-  // About / Projects: pin the focus block to the visual center (below sticky nav).
-  if (id === "about" || id === "projects") {
+  // About / Capabilities: pin the focus block to the visual center (below sticky nav).
+  if (id === "about" || id === "capabilities") {
     const scrollTop =
       window.scrollY ||
       document.documentElement.scrollTop ||
@@ -52,6 +52,23 @@ export function scrollToNavTarget(href: string, behavior: ScrollBehavior = "smoo
     const targetY = Math.max(
       0,
       rect.top + scrollTop + rect.height / 2 - visualCenterFromTop,
+    );
+    window.scrollTo({ top: targetY, behavior });
+    return;
+  }
+
+  // Projects: sit a bit above center so title + intro aren't too low.
+  if (id === "projects") {
+    const scrollTop =
+      window.scrollY ||
+      document.documentElement.scrollTop ||
+      document.body.scrollTop ||
+      0;
+    const rect = focus.getBoundingClientRect();
+    const focusBandFromTop = navH + (window.innerHeight - navH) * 0.34;
+    const targetY = Math.max(
+      0,
+      rect.top + scrollTop + rect.height / 2 - focusBandFromTop,
     );
     window.scrollTo({ top: targetY, behavior });
     return;
