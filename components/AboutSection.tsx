@@ -70,10 +70,10 @@ const aboutChatBubbles = [
 
 /** Short lively burst, then a long rest — hints the avatar is interactive. */
 const avatarNudge = {
-  rotate: [0, -8, 7, -5.5, 4, -2, 0],
-  x: [0, -2, 2.2, -1.4, 1, -0.4, 0],
-  y: [0, -1.5, 0.6, -1, 0.4, -0.2, 0],
-} as const;
+  rotate: [0, -8, 7, -5.5, 4, -2, 0] as number[],
+  x: [0, -2, 2.2, -1.4, 1, -0.4, 0] as number[],
+  y: [0, -1.5, 0.6, -1, 0.4, -0.2, 0] as number[],
+};
 
 const CONFETTI_ACCENTS = [
   "#FF6B6B",
